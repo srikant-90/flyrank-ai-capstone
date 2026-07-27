@@ -1,0 +1,44 @@
+.settings-section {
+  background-color: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+}
+
+.settings-section__inner {
+  max-width: var(--layout-max-width);
+  margin: 0 auto;
+  padding: 4rem 1.5rem;
+}
+
+.settings-section__header {
+  max-width: 36rem;
+  margin: 0 auto 2rem;
+  text-align: center;
+}
+
+.settings-section__header h2 {
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.settings-section__header p {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+
+.settings-section__form-card {
+  max-width: 32rem;
+  margin: 0 auto;
+  padding: 0.5rem;
+  border-radius: 1rem;
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-md);
+}
+
+.settings-section__form-card .settings-form {
+  margin: 0;
+}
