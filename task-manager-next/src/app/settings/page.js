@@ -1,10 +1,9 @@
-// Server Component placeholder.
 export default function SettingsPage() {
   return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-semibold">Settings</h1>
-      <p className="text-muted">
-        Account and preference settings placeholder.
+    <div className="p-6">
+      <h1 className="text-3xl font-bold">Settings</h1>
+      <p className="mt-3 text-gray-600">
+        Configure your application settings here.
       </p>
     </div>
   );

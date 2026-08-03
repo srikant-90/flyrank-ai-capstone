@@ -1,22 +1,27 @@
 import "./globals.css";
-import { NavBar } from "@/components/NavBar";
+import Link from "next/link";
 
 export const metadata = {
   title: "Task Manager",
-  description: "A simple task manager built with Next.js and Tailwind.",
+  description: "FlyRank AI Foundations Assignment",
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className="h-full antialiased">
-      <body className="min-h-full flex flex-col">
-        <NavBar />
-        <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-8">
+    <html lang="en">
+      <body>
+        <nav className="bg-blue-600 text-white p-4">
+          <div className="max-w-5xl mx-auto flex gap-6">
+            <Link href="/">Home</Link>
+            <Link href="/tasks">Tasks</Link>
+            <Link href="/settings">Settings</Link>
+            <Link href="/health">Health</Link>
+          </div>
+        </nav>
+
+        <main className="max-w-5xl mx-auto p-6">
           {children}
         </main>
-        <footer className="border-t border-border px-4 py-4 text-center text-xs text-muted">
-          Task Manager — built with Next.js
-        </footer>
       </body>
     </html>
   );

@@ -1,18 +1,12 @@
-import Link from "next/link";
-
-// Server Component — params are available directly, no client state needed.
-export default async function TaskDetailPage({ params }) {
-  const { id } = await params;
-
+export default async function TaskDetailsPage({ params }) {
   return (
-    <div className="space-y-4">
-      <Link href="/tasks" className="text-sm text-accent hover:underline">
-        &larr; Back to tasks
-      </Link>
-      <h1 className="text-2xl font-semibold">Task {id}</h1>
-      <p className="text-muted">
-        Placeholder detail view — full task fields, edit, and delete will
-        go here.
+    <div className="p-6">
+      <h1 className="text-3xl font-bold">
+        Task {params.id}
+      </h1>
+
+      <p className="mt-3 text-gray-600">
+        Individual task details will appear here.
       </p>
     </div>
   );
