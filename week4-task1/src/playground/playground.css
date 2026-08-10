@@ -1,0 +1,73 @@
+.playground-app {
+  max-width: 640px;
+  margin: 2rem auto;
+  font-family: system-ui, sans-serif;
+}
+section {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #ddd;
+}
+button:focus-visible,
+[role="tab"]:focus-visible,
+[role="tabpanel"]:focus-visible {
+  outline: 2px solid #3f3ad6;
+  outline-offset: 2px;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal-dialog {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  min-width: 320px;
+}
+.modal-close {
+  margin-top: 1rem;
+}
+
+.tablist {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 1px solid #ccc;
+}
+.tab {
+  background: none;
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+.tab[aria-selected="true"] {
+  border-bottom: 2px solid #3f3ad6;
+  font-weight: 600;
+}
+.tabpanel {
+  padding: 1rem 0;
+}
+
+.disclosure-trigger {
+  background: none;
+  border: none;
+  font: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.disclosure-caret {
+  display: inline-block;
+  transition: transform 0.15s ease;
+}
+.disclosure-caret.open {
+  transform: rotate(90deg);
+}
+.disclosure-content {
+  padding: 0.5rem 0 0 1.5rem;
+}
