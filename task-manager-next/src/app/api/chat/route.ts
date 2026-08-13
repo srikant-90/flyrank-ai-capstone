@@ -16,28 +16,28 @@ export const maxDuration = 30;
 export async function POST(req: Request) {
   try {
     if (!process.env.GROQ_API_KEY) {
-      return new Response("GROQ_API_KEY environment variable is missing on server.", {
+      return new Response("GROQ_API_KEY is missing on server environment variables.", {
         status: 500,
-        statusText: "GROQ_API_KEY Missing",
       });
     }
 
     const { messages }: { messages: UIMessage[] } = await req.json();
 
+    const modelMessages = await convertToModelMessages(messages);
+
     const result = streamText({
       model: groq(AI_CONFIG.model),
       system: SYSTEM_PROMPT,
-      messages: await convertToModelMessages(messages),
+      messages: modelMessages,
       temperature: AI_CONFIG.temperature,
       maxOutputTokens: AI_CONFIG.maxOutputTokens,
-      abortSignal: req.signal,
     });
 
     return result.toUIMessageStreamResponse();
   } catch (err: unknown) {
-    const error = err as Error;
-    console.error("Chat API error:", error);
-    return new Response(error.message || "An error occurred while generating AI response.", {
+    const errorMsg = err instanceof Error ? `${err.name}: ${err.message}` : String(err);
+    console.error("Chat API error:", err);
+    return new Response(errorMsg, {
       status: 500,
     });
   }

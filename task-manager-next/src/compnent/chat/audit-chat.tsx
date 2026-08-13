@@ -29,7 +29,7 @@ function AssistantMessage({ text }: { text: string }) {
 
 export function AuditChat() {
   const { messages, sendMessage, status, stop, error } = useChat({
-    transport: new DefaultChatTransport({ api: "/api/chat" }),
+    api: "/api/chat",
   });
 
   const [input, setInput] = useState("");
