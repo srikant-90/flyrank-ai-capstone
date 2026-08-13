@@ -14,6 +14,7 @@ export default function RootLayout({ children }) {
           <div className="max-w-5xl mx-auto flex gap-6">
             <Link href="/">Home</Link>
             <Link href="/tasks">Tasks</Link>
+            <Link href="/chat">Chat</Link>
             <Link href="/settings">Settings</Link>
             <Link href="/health">Health</Link>
           </div>
