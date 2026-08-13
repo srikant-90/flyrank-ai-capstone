@@ -28,7 +28,7 @@ function AssistantMessage({ text }: { text: string }) {
 }
 
 export function AuditChat() {
-  const { messages, sendMessage, status, stop } = useChat({
+  const { messages, sendMessage, status, stop, error } = useChat({
     transport: new DefaultChatTransport({ api: "/api/chat" }),
   });
 
@@ -88,12 +88,12 @@ export function AuditChat() {
             width: 10,
             height: 10,
             borderRadius: "50%",
-            backgroundColor: "#4ade80",
-            boxShadow: "0 0 6px #4ade80",
+            backgroundColor: error ? "#ef4444" : "#4ade80",
+            boxShadow: error ? "0 0 6px #ef4444" : "0 0 6px #4ade80",
           }}
         />
         <span style={{ color: "#fff", fontWeight: 600, fontSize: 15 }}>
-          AI Assistant (Gemini)
+          AI Assistant (Groq LLaMA 3.3)
         </span>
       </div>
 
@@ -235,6 +235,29 @@ export function AuditChat() {
                   }}
                 />
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* Error message banner */}
+        {error && (
+          <div
+            style={{
+              padding: "12px 16px",
+              borderRadius: "12px",
+              backgroundColor: "#fef2f2",
+              border: "1px solid #fecaca",
+              color: "#991b1b",
+              fontSize: "13px",
+              lineHeight: 1.5,
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+            }}
+          >
+            <span style={{ fontSize: "16px" }}>⚠️</span>
+            <div>
+              <strong>Connection Error:</strong> {error.message || "Failed to reach AI service."}
             </div>
           </div>
         )}
