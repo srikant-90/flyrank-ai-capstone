@@ -21,7 +21,7 @@ export const maxDuration = 30;
 
 function createFallbackStream(userPrompt: string, errorNotice?: string) {
   const stream = createUIMessageStream({
-    execute: async (writer) => {
+    execute: async ({ writer }) => {
       let reply = "";
       const lower = userPrompt.toLowerCase();
 
