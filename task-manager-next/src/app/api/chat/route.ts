@@ -39,11 +39,15 @@ function createFallbackStream(userPrompt: string, errorNotice?: string) {
         reply = `⚠️ *Notice: ${errorNotice}*\n\n${reply}`;
       }
 
-      // Stream token by token for realistic response animation
       const words = reply.split(" ");
+      const msgId = "fallback-" + Date.now();
       for (let i = 0; i < words.length; i++) {
-        writer.writeText(words[i] + (i < words.length - 1 ? " " : ""));
-        await new Promise((res) => setTimeout(res, 35));
+        writer.write({
+          type: "text-delta",
+          id: msgId,
+          textDelta: words[i] + (i < words.length - 1 ? " " : ""),
+        });
+        await new Promise((res) => setTimeout(res, 30));
       }
     },
   });
@@ -64,7 +68,7 @@ export async function POST(req: Request) {
 
     const apiKey = process.env.GROQ_API_KEY;
 
-    if (!apiKey || apiKey.includes("your-groq-api-key")) {
+    if (!apiKey || apiKey.trim() === "" || apiKey.includes("your-groq-api-key")) {
       return createFallbackStream(
         userPrompt,
         "GROQ_API_KEY is not configured in Vercel Environment Variables."
