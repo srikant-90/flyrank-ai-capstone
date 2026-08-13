@@ -14,10 +14,12 @@
     "@ai-sdk/groq": "^4.0.28",
     "@ai-sdk/react": "^4.0.65",
     "ai": "^7.0.62",
+    "lucide-react": "^1.31.0",
     "next": "16.2.12",
     "react": "19.2.4",
     "react-dom": "19.2.4",
-    "streamdown": "^2.5.0"
+    "streamdown": "^2.5.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
