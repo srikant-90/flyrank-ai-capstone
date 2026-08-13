@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>FL-05: Workflows vs. Agents & MCP Integration Explainer</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.65;
+      color: #1e293b;
+      max-width: 850px;
+      margin: 40px auto;
+      padding: 0 20px;
+      background-color: #ffffff;
+    }
+    h1 {
+      color: #0f172a;
+      border-bottom: 2px solid #cbd5e1;
+      padding-bottom: 10px;
+      font-size: 26px;
+    }
+    h2 {
+      color: #1e293b;
+      margin-top: 32px;
+      font-size: 20px;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 6px;
+    }
+    h3 {
+      color: #334155;
+      font-size: 16px;
+      margin-top: 20px;
+    }
+    .meta-box {
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+    .meta-box p {
+      margin: 4px 0;
+      font-size: 14px;
+    }
+    .word-count-badge {
+      display: inline-block;
+      background-color: #dbeafe;
+      color: #1e40af;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-size: 12px;
+      margin-top: 6px;
+    }
+    .code-block {
+      background-color: #0f172a;
+      color: #e2e8f0;
+      font-family: monospace;
+      padding: 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      overflow-x: auto;
+      margin: 14px 0;
+    }
+    .evidence-card {
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 20px;
+      background-color: #f8fafc;
+    }
+    .primitive-badge {
+      display: inline-block;
+      background-color: #e0e7ff;
+      color: #3730a3;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    @media print {
+      body { margin: 20px; max-width: 100%; }
+      .evidence-card, .code-block { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🤖 FL-05: Workflows vs. Agents & MCP Integration Explainer</h1>
+
+  <div class="meta-box">
+    <p><strong>Track:</strong> General AI Fluency (Build Phase)</p>
+    <p><strong>Assignment Code:</strong> FL-05 (Workflows vs. Agents & MCP Integration)</p>
+    <p><strong>Student Name:</strong> Srikant Behera</p>
+    <p><strong>Word Count:</strong> 780 Words (Explainer Section)</p>
+    <span class="word-count-badge">Target: 600 - 900 Words ✅</span>
+  </div>
+
+  <h2>1. Workflows vs. Agents: The Foundational Distinction</h2>
+  <p>In modern AI architecture, the word <em>"agent"</em> is frequently overused to describe simple automated prompt sequences. However, Anthropic’s engineering research establishes a sharp, fundamental distinction between <strong>workflows</strong> and <strong>agents</strong> based on where control flow decision-making resides.</p>
+
+  <p>A <strong>Workflow</strong> is a system where the execution path, sequence of operations, and logic transitions are hardcoded by human developers. LLMs are used within workflows as structured processors at specific steps (such as extracting facts or formatting markdown), but the LLM does not decide what step happens next. The control flow is deterministic, static, and predictable.</p>
+
+  <p>An <strong>Agent</strong>, by contrast, is an autonomous system where an LLM dynamically directs its own execution loop. Given a high-level goal, the LLM continuously evaluates its progress, selects which tools to invoke, interprets tool feedback, and decides whether to stop or try another path. The control flow is non-deterministic, dynamic, and driven by the model’s internal reasoning loop.</p>
+
+  <h3>Classification of the FL-04 Pipeline</h3>
+  <p>Based on this strict definition, my FL-04 technical writing pipeline is explicitly a <strong>Workflow</strong>, not an agent. It follows a rigid 4-step linear chain: <code>Gather & Extract → Structured Drafting → Adversarial Critique → Revision & Formatting</code>. The handoffs between steps are pre-scripted. Step 1 always feeds Step 2, Step 2 always feeds Step 3, and Step 3 always feeds Step 4. At no point does the LLM decide to skip a step, loop back independently, or choose to call external tools on its own initiative.</p>
+
+  <h2>2. Model Context Protocol (MCP) and Its Three Primitives</h2>
+  <p>The <strong>Model Context Protocol (MCP)</strong> is an open standard designed to serve as the universal <em>"USB-C port for AI applications."</em> Before MCP, connecting an AI model to an external database, local file system, or enterprise API required custom integration code for every provider and tool pair. MCP replaces this fragmented ecosystem with a unified client-server protocol.</p>
+
+  <p>MCP architecture revolves around three fundamental primitives:</p>
+  <ul>
+    <li><span class="primitive-badge">1. Tools</span> <strong>(Action Layer):</strong> Executable functions that the server exposes to the AI client. Tools allow models to perform side-effects or retrieve dynamic data (e.g., executing a terminal command, running a SQL query, or writing to a file). The client sends tool call arguments, and the server returns the execution result.</li>
+    <li><span class="primitive-badge">2. Resources</span> <strong>(Context Layer):</strong> Static or dynamic data sources attached to the model’s context. Unlike tools (which represent actions), resources represent readable context such as local file contents, application logs, or database schemas exposed safely to the LLM.</li>
+    <li><span class="primitive-badge">3. Prompts</span> <strong>(Template Layer):</strong> Pre-configured prompt templates hosted on the server that guide how models interact with specific resources or tools, providing consistent workflow shortcuts for users and clients.</li>
+  </ul>
+
+  <h2>3. Concrete Agent Upgrade: Transforming FL-04 into an Agent</h2>
+  <p>To upgrade the deterministic FL-04 pipeline into a true <strong>Autonomous Research & Editing Agent</strong>, I would replace the fixed 4-step chain with a dynamic <strong>ReAct (Reasoning + Action) Evaluation Loop</strong> powered by MCP tools.</p>
+
+  <p>Instead of hardcoding a 4-step sequence, the upgraded agent would operate as follows:</p>
+  <ol>
+    <li>The user inputs a goal: <em>"Generate a verified, production-ready technical migration guide for Next.js 16."</em></li>
+    <li>The agent evaluates the request and autonomously invokes an MCP File Search tool (<code>grep_search</code> / <code>view_file</code>) to inspect the user's local repository dependencies and configuration files.</li>
+    <li>If the agent detects missing information or version conflicts, it dynamically chooses to call an MCP Web Search tool (<code>search_web</code>) to pull live official documentation.</li>
+    <li>The agent drafts the code and autonomously runs an MCP Terminal Execution tool (<code>run_command</code>) to execute <code>npm run build</code> in an isolated environment.</li>
+    <li>If the terminal tool returns a build error (e.g. TypeScript type error), the agent reads the log error directly, reflects on the failure, edits the code via a file tool, and re-runs verification until the build passes cleanly.</li>
+  </ol>
+  <p>This transforms a static 4-prompt assembly line into an autonomous, self-correcting agent loop capable of verifying its own work against real runtime environments.</p>
+
+  <h2>4. Evidence of Working MCP / Tool Connector Setup (3 Tasks)</h2>
+  <p>The following three tasks demonstrate live tool execution (MCP tool calls) where the AI client performs side-effects and reads local system state that plain chat models cannot accomplish without tool access.</p>
+
+  <div class="evidence-card">
+    <h3>Task 1: Reading & Inspecting Local File System State (File Tools)</h3>
+    <p><strong>Capability:</strong> Plain chat cannot inspect local disk files. Using local file tools (<code>list_dir</code> and <code>view_file</code>), the system directly inspected local project manifests and configuration files.</p>
+    <div class="code-block">Tool Call: view_file({ AbsolutePath: "d:/FlyRank-Project/flyrank-ai-capstone/task-manager-next/package.json" })
+Output Received:
+{
+  "name": "task-manager-next",
+  "dependencies": {
+    "@ai-sdk/groq": "^4.0.28",
+    "@ai-sdk/react": "^4.0.65",
+    "ai": "^7.0.62",
+    "next": "16.2.12"
+  }
+}</div>
+  </div>
+
+  <div class="evidence-card">
+    <h3>Task 2: Executing Live Terminal Commands & Compilation (Command Tools)</h3>
+    <p><strong>Capability:</strong> Plain chat cannot run shell commands or test builds. Using the terminal tool (<code>run_command</code>), the system executed live Next.js compilation and verified exit codes on the user's host OS.</p>
+    <div class="code-block">Tool Call: run_command({ CommandLine: "npm run build", Cwd: "d:/FlyRank-Project/flyrank-ai-capstone/task-manager-next" })
+Output Received:
+> task-manager-next@0.1.0 build
+> next build
+▲ Next.js 16.2.12 (Turbopack)
+✓ Compiled successfully in 8.2s
+✓ Generating static pages (9/9)
+Exit Code: 0 (Success)</div>
+  </div>
+
+  <div class="evidence-card">
+    <h3>Task 3: Real-Time Web Grounding & External Knowledge Retrieval (Web Tools)</h3>
+    <p><strong>Capability:</strong> Plain chat is limited by training data cutoff. Using the web search tool (<code>search_web</code>), the system retrieved live mid-2026 API documentation for model availability.</p>
+    <div class="code-block">Tool Call: search_web({ query: "@ai-sdk/google gemini interactions API available models 2026" })
+Output Received:
+- Model `gemini-3.6-flash`: Current default release (July 2026)
+- Model `gemini-2.0-flash`: Deprecated for new keys
+- Protocol requirement: google.interactions(...) method standard</div>
+  </div>
+
+</body>
+</html>

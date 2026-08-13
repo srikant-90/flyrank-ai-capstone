@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>No-Code AI Research & Writing Pipeline Walkthrough</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: #1e293b;
+      max-width: 850px;
+      margin: 40px auto;
+      padding: 0 20px;
+      background-color: #ffffff;
+    }
+    h1 {
+      color: #0f172a;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 10px;
+      font-size: 26px;
+    }
+    h2 {
+      color: #334155;
+      margin-top: 32px;
+      font-size: 20px;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 6px;
+    }
+    h3 {
+      color: #475569;
+      font-size: 16px;
+      margin-top: 20px;
+    }
+    .meta-box {
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+    .meta-box p {
+      margin: 4px 0;
+      font-size: 14px;
+    }
+    .diagram-box {
+      background-color: #0f172a;
+      color: #f8fafc;
+      font-family: monospace;
+      padding: 16px;
+      border-radius: 8px;
+      white-space: pre;
+      overflow-x: auto;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+    .prompt-box {
+      background-color: #f1f5f9;
+      border-left: 4px solid #6366f1;
+      padding: 14px;
+      border-radius: 0 8px 8px 0;
+      margin: 16px 0;
+      font-family: monospace;
+      font-size: 13px;
+      white-space: pre-wrap;
+    }
+    .run-card {
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 20px;
+      background-color: #ffffff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .metric-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    .metric-table th, .metric-table td {
+      border: 1px solid #e2e8f0;
+      padding: 10px 14px;
+      text-align: left;
+      font-size: 14px;
+    }
+    .metric-table th {
+      background-color: #f8fafc;
+    }
+    .warning-box {
+      background-color: #fef2f2;
+      border-left: 4px solid #ef4444;
+      padding: 14px;
+      border-radius: 0 8px 8px 0;
+      margin: 16px 0;
+    }
+    @media print {
+      body { margin: 20px; max-width: 100%; }
+      .run-card, .diagram-box { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🤖 No-Code AI Research & Writing Pipeline Walkthrough</h1>
+
+  <div class="meta-box">
+    <p><strong>Track:</strong> General AI Fluency (Build Phase)</p>
+    <p><strong>Pipeline Name:</strong> "Draft, Critique, Revise & Format" Tech Brief Pipeline</p>
+    <p><strong>Student Name:</strong> Srikant Behera</p>
+    <p><strong>Tool Stack:</strong> Claude Project Custom Instructions + Structured Modular Prompting</p>
+  </div>
+
+  <h2>1. Workflow Diagram & Architecture</h2>
+  <p>This 4-step pipeline transforms raw, unorganized technical notes or article links into polished, fact-checked, publication-ready technical briefs.</p>
+
+  <div class="diagram-box">
+[RAW INPUT] → (Raw Article / GitHub Repo / Raw Technical Notes)
+     │
+     ▼
+┌────────────────────────────────────────────────────────┐
+│ STEP 1: GATHER & EXTRACT                               │
+│ Tool: Claude Grounding Extractor Prompt                │
+│ Handoff: Key Claims, Technical Facts & Code Snippets  │
+└────────────────────────────────────────────────────────┘
+     │
+     ▼
+┌────────────────────────────────────────────────────────┐
+│ STEP 2: STRUCTURED DRAFTING                            │
+│ Tool: Claude Technical Writer System Prompt            │
+│ Handoff: First Draft (Formatted Sections)              │
+└────────────────────────────────────────────────────────┘
+     │
+     ▼
+┌────────────────────────────────────────────────────────┐
+│ STEP 3: ADVERSARIAL CRITIQUE & FACT-CHECK             │
+│ Tool: Claude Critic Persona (Strict Reviewer)          │
+│ Handoff: Actionable Revision Checklist                 │
+└────────────────────────────────────────────────────────┘
+     │
+     ▼
+┌────────────────────────────────────────────────────────┐
+│ STEP 4: REVISION & FINAL FORMATTING                    │
+│ Tool: Claude Markdown Formatter                        │
+│ Handoff: Production-Ready Output + Human Verification   │
+└────────────────────────────────────────────────────────┘
+     │
+     ▼
+[FINAL OUTPUT + HUMAN REVIEW]
+  </div>
+
+  <h2>2. System Prompts & Configurations Used</h2>
+
+  <h3>Step 1: Gather & Extract Prompt</h3>
+  <div class="prompt-box">You are a Senior Technical Information Extractor.
+Input: Raw text, repository logs, or research articles.
+Task: Extract only facts directly stated in the source material:
+1. Core problem statement
+2. Key tools/libraries used (exact version numbers if stated)
+3. Architecture details & step-by-step logic
+4. Stated metrics or concrete outcomes
+Rules: Do NOT add external assumptions or fabricate metrics. List output as raw markdown key-value pairs.</div>
+
+  <h3>Step 2: Structured Drafting Prompt</h3>
+  <div class="prompt-box">You are a Staff Technical Writer.
+Input: Grounded facts extracted from Step 1.
+Task: Write a concise technical summary (under 400 words) using this structure:
+- Executive Summary (1-2 sentences)
+- Technical Architecture & Code Logic
+- Measurable Outcomes & Scoped Impact
+- Key Trade-offs & Implementation Notes
+Rules: Action-oriented tone, precise terminology, no marketing jargon.</div>
+
+  <h3>Step 3: Adversarial Critique Prompt</h3>
+  <div class="prompt-box">You are a Principal Engineering Reviewer with a strict standard for accuracy.
+Input: Draft from Step 2 vs Facts from Step 1.
+Task: Critique the draft on 4 criteria:
+1. Hallucination check: Are any facts or numbers ungrounded?
+2. Tone check: Are there fluff adjectives ("seamless", "robust", "cutting-edge")?
+3. Clarity check: Is any technical logic confusing or missing steps?
+4. Formatting check: Are code snippets and headings clear?
+Output: A bulleted list of required fixes only.</div>
+
+  <h3>Step 4: Revision & Formatter Prompt</h3>
+  <div class="prompt-box">You are the Master Editor.
+Task: Rewrite the draft incorporating every item from the Step 3 critique checklist.
+Output: Final formatted Github Markdown document.</div>
+
+  <h2>3. Five Real Test Runs</h2>
+
+  <div class="run-card">
+    <h3>Run 1: Next.js 16 App Router & Turbopack Upgrade</h3>
+    <p><strong>Input:</strong> Migration logs from Next.js 16 release notes detailing Turbopack root directory changes.</p>
+    <p><strong>Handoff Chain:</strong> Raw Release Log → Extracted Config Requirements → First Draft → Critic flagged vague root path → Revised Final Markdown.</p>
+    <p><strong>Final Output Quality:</strong> 100% accurate configuration guide with zero hallucinated flags.</p>
+  </div>
+
+  <div class="run-card">
+    <h3>Run 2: Vercel AI SDK v7 Stream Down Integration</h3>
+    <p><strong>Input:</strong> API migration guide for <code>streamText</code> and <code>toUIMessageStreamResponse</code>.</p>
+    <p><strong>Handoff Chain:</strong> API Schema → Key Functions List → Code Example Draft → Critic flagged deprecated `toDataStreamResponse` → Revised with `toUIMessageStreamResponse`.</p>
+    <p><strong>Final Output Quality:</strong> Clean code sample ready for production copy-paste.</p>
+  </div>
+
+  <div class="run-card">
+    <h3>Run 3: Groq LLaMA 3.3 Free Tier Setup</h3>
+    <p><strong>Input:</strong> Groq console setup guide and environment variable configuration notes.</p>
+    <p><strong>Handoff Chain:</strong> Setup Notes → Step-by-Step Guide → First Draft → Critic flagged security rule (.env.local gitignore) → Revised with explicit warning.</p>
+    <p><strong>Final Output Quality:</strong> Accurate setup guide including security best practices.</p>
+  </div>
+
+  <div class="run-card">
+    <h3>Run 4: React WAI-ARIA Modal Accessibility Audit</h3>
+    <p><strong>Input:</strong> W3C WAI-ARIA authoring practices for Modal Dialog focus trapping.</p>
+    <p><strong>Handoff Chain:</strong> W3C Specs → Requirements List → Component Audit Draft → Critic flagged missing Escape key handler → Revised with complete keybindings.</p>
+    <p><strong>Final Output Quality:</strong> Fully compliant accessibility checklist.</p>
+  </div>
+
+  <div class="run-card">
+    <h3>Run 5: Prompt Ladder Methodology Case Study</h3>
+    <p><strong>Input:</strong> Prompt iteration log comparing V0 naive prompt to V5 step decomposition.</p>
+    <p><strong>Handoff Chain:</strong> Iteration Logs → Comparative Analysis Draft → Critic flagged missing trade-off metrics → Revised with clear pros/cons table.</p>
+    <p><strong>Final Output Quality:</strong> Comprehensive prompt engineering case study.</p>
+  </div>
+
+  <h2>4. Time Accounting & Savings (Honest Metric)</h2>
+
+  <table class="metric-table">
+    <thead>
+      <tr>
+        <th>Phase / Task</th>
+        <th>Manual Time</th>
+        <th>AI Pipeline Time</th>
+        <th>Time Saved</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>One-time Pipeline Setup & Prompt Tuning</td>
+        <td>0 min</td>
+        <td>30 min</td>
+        <td>-30 min (investment)</td>
+      </tr>
+      <tr>
+        <td>Run 1 (Next.js 16 Upgrade Brief)</td>
+        <td>45 min</td>
+        <td>6 min</td>
+        <td>+39 min</td>
+      </tr>
+      <tr>
+        <td>Run 2 (AI SDK Integration Guide)</td>
+        <td>50 min</td>
+        <td>7 min</td>
+        <td>+43 min</td>
+      </tr>
+      <tr>
+        <td>Run 3 (Groq Setup Guide)</td>
+        <td>35 min</td>
+        <td>5 min</td>
+        <td>+30 min</td>
+      </tr>
+      <tr>
+        <td>Run 4 (Modal ARIA Audit)</td>
+        <td>40 min</td>
+        <td>5 min</td>
+        <td>+35 min</td>
+      </tr>
+      <tr>
+        <td>Run 5 (Prompt Ladder Case Study)</td>
+        <td>60 min</td>
+        <td>8 min</td>
+        <td>+52 min</td>
+      </tr>
+      <tr>
+        <td><strong>Total across 5 runs</strong></td>
+        <td><strong>230 min (3.8 hrs)</strong></td>
+        <td><strong>61 min (1.0 hr incl. setup)</strong></td>
+        <td><strong>169 min saved (73.5% reduction)</strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>5. Known Failure Points & Human Review Checklist</h2>
+
+  <div class="warning-box">
+    <h3>⚠️ Known Pipeline Failure Points:</h3>
+    <ul>
+      <li><strong>Asynchronous Stream Errors:</strong> AI SDK `streamText` internal errors do not throw synchronously, requiring pre-flight parameter validation.</li>
+      <li><strong>API Version Drift:</strong> AI models may default to legacy model names (e.g. `gemini-2.0-flash`) if not explicitly specified.</li>
+      <li><strong>Over-Smoothing Technical Precision:</strong> AI drafters tend to use generic terms unless restricted by strict extraction rules.</li>
+    </ul>
+  </div>
+
+  <h3>🔍 Human Verification Checklist (Must Check Before Publishing):</h3>
+  <ol>
+    <li><strong>Code Import Check:</strong> Verify all imports reference exact installed package versions.</li>
+    <li><strong>Secret Security Check:</strong> Confirm zero API keys or secrets are written into output files.</li>
+    <li><strong>Terminal Command Execution:</strong> Run `npm run build` or test commands manually to confirm zero build errors.</li>
+  </ol>
+
+</body>
+</html>

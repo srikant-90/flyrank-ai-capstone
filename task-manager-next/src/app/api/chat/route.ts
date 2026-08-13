@@ -1,10 +1,14 @@
 /**
  * app/api/chat/route.ts
  * -----------------------------------------------------------------------
- * FE-07 Generative UI & Server Tools Route Handler.
- * Server tools defined with Zod schemas:
- *  - auditTaskRisk: Scores task complexity, deadlines, & risk factors.
- *  - requestUserConfirmation: User confirmation before critical actions.
+ * FE-08 Core AI Route Handler with Sabotage Testing Support.
+ * Handles:
+ *  - Groq LLaMA 3.3 streaming text & tool calls
+ *  - Sabotage modes via header ('x-sabotage') or request body ('sabotage'):
+ *    - 'network': Returns HTTP 500 Connection Refused
+ *    - '429': Returns HTTP 429 Rate Limit Exceeded
+ *    - 'mid-stream': Streams 2 tokens then aborts/throws mid-stream
+ *    - 'tool': Throws error during server tool execution
  * -----------------------------------------------------------------------
  */
 
@@ -36,7 +40,7 @@ const auditTaskRiskSchema = z.object({
   simulateError: z
     .boolean()
     .optional()
-    .describe("Simulate an audit failure for testing State 4 rendering"),
+    .describe("Simulate an audit failure for testing State 4 error card"),
 });
 
 const userConfirmationSchema = z.object({
@@ -44,7 +48,7 @@ const userConfirmationSchema = z.object({
   details: z.string().describe("Explanation of why confirmation is required"),
 });
 
-// 2. Server Tools Definition (AI SDK v7 using inputSchema)
+// 2. Server Tools Definition
 export const serverTools = {
   auditTaskRisk: tool({
     description:
@@ -60,7 +64,7 @@ export const serverTools = {
         simulateError,
       } = args;
 
-      // Simulate server calculation processing time
+      // Simulate server processing time
       await new Promise((resolve) => setTimeout(resolve, 600));
 
       if (
@@ -142,126 +146,33 @@ export const serverTools = {
   }),
 };
 
-function createFallbackStream(userPrompt: string, errorNotice?: string) {
+// Helper: Mid-stream sabotage response
+function createMidStreamSabotageStream() {
   const stream = createUIMessageStream({
     execute: async ({ writer }) => {
-      const lower = userPrompt.toLowerCase();
+      const msgId = "text-" + Date.now();
+      writer.write({
+        type: "text-start",
+        id: msgId,
+      });
+      writer.write({
+        type: "text-delta",
+        id: msgId,
+        delta: "I am starting to analyze your task specifications...",
+      });
 
-      // Check if user is testing the failure state (State 4)
-      const isSimulateError =
-        lower.includes("fail") || lower.includes("error") || lower.includes("broken");
+      await new Promise((res) => setTimeout(res, 500));
 
-      const isAuditRequest =
-        lower.includes("audit") ||
-        lower.includes("risk") ||
-        lower.includes("score") ||
-        lower.includes("check") ||
-        lower.includes("task") ||
-        isSimulateError;
+      writer.write({
+        type: "text-delta",
+        id: msgId,
+        delta: " [STREAM INTERRUPTED: Connection reset by server mid-stream!]",
+      });
 
-      if (isAuditRequest) {
-        const callId = "call-" + Date.now();
-        const args = {
-          taskTitle: isSimulateError
-            ? "Database Migration Cleanup (Error Test)"
-            : "Refactor Next.js App Router API Routes",
-          category: "Backend",
-          complexity: isSimulateError ? "critical" : "high",
-          estimatedHours: 24,
-          daysUntilDeadline: 2,
-          simulateError: isSimulateError,
-        };
-
-        // State 1 & 2: Stream tool-call-start
-        writer.write({
-          type: "tool-call-start",
-          toolCallId: callId,
-          toolName: "auditTaskRisk",
-        } as any);
-
-        // Simulate server execution delay
-        await new Promise((res) => setTimeout(res, 800));
-
-        if (isSimulateError) {
-          // State 4: Stream tool-result error
-          writer.write({
-            type: "tool-result",
-            toolCallId: callId,
-            result: {
-              error: `Failed to audit task "${args.taskTitle}": Telemetry connection timed out while fetching historical metrics from audit server.`,
-              isError: true,
-            },
-          } as any);
-
-          const msgId = "text-" + Date.now();
-          writer.write({
-            type: "text-delta",
-            id: msgId,
-            delta:
-              "\n\n⚠️ **Audit Failure State Rendered:** The tool execution encountered a simulated telemetry error. Check the designed error card above for details and retry action.",
-          });
-        } else {
-          // State 3: Stream tool-result success
-          writer.write({
-            type: "tool-result",
-            toolCallId: callId,
-            result: {
-              auditId: "audit-" + Math.random().toString(36).substring(2, 9),
-              timestamp: new Date().toISOString(),
-              taskTitle: args.taskTitle,
-              category: args.category,
-              complexity: args.complexity,
-              estimatedHours: args.estimatedHours,
-              daysUntilDeadline: args.daysUntilDeadline,
-              riskScore: 65,
-              riskLevel: "High",
-              healthScore: 35,
-              blockers: [
-                "Insufficient time buffer before target deadline (2 days left for 24h task)",
-                "Requires architectural peer code review",
-              ],
-              recommendations: [
-                "Decompose task into smaller sub-tasks under 8 hours each",
-                "Prioritize immediate peer code review to prevent slippage",
-                "Ensure test coverage for critical execution paths",
-              ],
-            },
-          } as any);
-
-          const msgId = "text-" + Date.now();
-          const reply =
-            "\n\nI have completed the task risk audit. The health score is **35% (High Risk)** due to tight deadlines. Please review the detailed risk score card above.";
-          writer.write({
-            type: "text-delta",
-            id: msgId,
-            delta: reply,
-          });
-        }
-      } else {
-        // Standard conversational response
-        let reply = "";
-        if (lower.includes("hi") || lower.includes("hello")) {
-          reply =
-            "Hello! I am your Task Manager AI Assistant. You can ask me to **audit a task** (e.g. *'Audit my backend task'* or *'Test an audit error'*).";
-        } else {
-          reply = `I received your message: "${userPrompt}".\n\nTry asking: **"Audit my backend API refactor task"** to trigger the server-side audit tool and see all 4 Generative UI states!`;
-        }
-
-        if (errorNotice) {
-          reply = `⚠️ *Notice: ${errorNotice}*\n\n${reply}`;
-        }
-
-        const words = reply.split(" ");
-        const msgId = "msg-" + Date.now();
-        for (let i = 0; i < words.length; i++) {
-          writer.write({
-            type: "text-delta",
-            id: msgId,
-            delta: words[i] + (i < words.length - 1 ? " " : ""),
-          });
-          await new Promise((res) => setTimeout(res, 30));
-        }
-      }
+      // Throw error mid-stream to simulate dropped connection mid-flight
+      throw new Error(
+        "Mid-stream connection dropped: Model worker node terminated unexpectedly during token generation."
+      );
     },
   });
 
@@ -270,44 +181,91 @@ function createFallbackStream(userPrompt: string, errorNotice?: string) {
 
 export async function POST(req: Request) {
   try {
-    const { messages }: { messages: UIMessage[] } = await req.json();
+    const body = await req.json().catch(() => ({}));
+    const { messages, sabotage: bodySabotage }: { messages: UIMessage[]; sabotage?: string } = body;
 
-    const lastMessage = messages[messages.length - 1];
+    const headerSabotage = req.headers.get("x-sabotage");
+    const sabotageMode = headerSabotage || bodySabotage;
+
+    // --- SABOTAGE TEST SCENARIOS ---
+    if (sabotageMode === "network") {
+      return new Response(
+        JSON.stringify({
+          error: "Network connection refused: Unable to reach upstream model gateway.",
+          code: "NETWORK_ERROR",
+        }),
+        { status: 503, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    if (sabotageMode === "429") {
+      return new Response(
+        JSON.stringify({
+          error: "Rate limit exceeded (429): You have exceeded your request quota per minute. Please try again in 15 seconds.",
+          code: "RATE_LIMIT_EXCEEDED",
+        }),
+        {
+          status: 429,
+          headers: {
+            "Content-Type": "application/json",
+            "Retry-After": "15",
+          },
+        }
+      );
+    }
+
+    if (sabotageMode === "mid-stream") {
+      return createMidStreamSabotageStream();
+    }
+
+    const lastMessage = messages?.[messages.length - 1];
     const userPrompt =
       lastMessage?.parts
         ?.filter((p) => p.type === "text")
-        .map((p) => p.text)
+        .map((p: any) => p.text)
         .join(" ") || "Hello";
+
+    // Check if prompt specifically requests sabotage mid-stream
+    if (userPrompt.toLowerCase().includes("sabotage mid-stream") || userPrompt.toLowerCase().includes("kill mid-stream")) {
+      return createMidStreamSabotageStream();
+    }
 
     const apiKey = process.env.GROQ_API_KEY;
 
     if (!apiKey || apiKey.trim() === "" || apiKey.includes("your-groq-api-key")) {
-      return createFallbackStream(userPrompt);
-    }
-
-    try {
-      const modelMessages = await convertToModelMessages(messages);
-
-      const result = streamText({
-        model: groq(AI_CONFIG.model),
-        system: SYSTEM_PROMPT,
-        messages: modelMessages,
-        tools: serverTools,
-        temperature: AI_CONFIG.temperature,
-        maxOutputTokens: AI_CONFIG.maxOutputTokens,
+      // Fallback stream if API key is missing
+      const stream = createUIMessageStream({
+        execute: async ({ writer }) => {
+          const msgId = "text-" + Date.now();
+          writer.write({
+            type: "text-delta",
+            id: msgId,
+            delta: "⚠️ Groq API key is missing in .env.local. Please configure GROQ_API_KEY to test live model streaming.",
+          });
+        },
       });
-
-      return result.toUIMessageStreamResponse();
-    } catch (apiError: unknown) {
-      const err = apiError as Error;
-      console.error("Groq API Error, falling back to smart tool stream:", err);
-      return createFallbackStream(
-        userPrompt,
-        `Groq API connection issue (${err?.message || "Connection failed"})`
-      );
+      return createUIMessageStreamResponse({ stream });
     }
-  } catch (err: unknown) {
-    console.error("Request error:", err);
-    return createFallbackStream("Hello", "Request processing fallback mode.");
+
+    const modelMessages = await convertToModelMessages(messages);
+
+    const result = streamText({
+      model: groq(AI_CONFIG.model),
+      system: SYSTEM_PROMPT,
+      messages: modelMessages,
+      tools: serverTools,
+      temperature: AI_CONFIG.temperature,
+      maxOutputTokens: AI_CONFIG.maxOutputTokens,
+    });
+
+    return result.toUIMessageStreamResponse();
+  } catch (err: any) {
+    console.error("POST /api/chat error:", err);
+    return new Response(
+      JSON.stringify({
+        error: err?.message || "An error occurred while processing your chat request.",
+      }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
+    );
   }
 }

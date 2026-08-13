@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Week 4 - Three Roads Stack Rationale</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: #1e293b;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 20px;
+      background-color: #ffffff;
+    }
+    h1 {
+      color: #0f172a;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 10px;
+      font-size: 26px;
+    }
+    h2 {
+      color: #334155;
+      margin-top: 28px;
+      font-size: 20px;
+    }
+    h3 {
+      color: #475569;
+      font-size: 16px;
+      margin-top: 18px;
+    }
+    .meta-box {
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+    .meta-box p {
+      margin: 4px 0;
+      font-size: 14px;
+    }
+    ul, ol {
+      padding-left: 24px;
+    }
+    li {
+      margin-bottom: 8px;
+    }
+    .highlight-box {
+      background-color: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      padding: 14px;
+      border-radius: 0 8px 8px 0;
+      margin: 20px 0;
+    }
+    .road-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+      background-color: #fafafa;
+    }
+    @media print {
+      body { margin: 20px; max-width: 100%; }
+      .road-card { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🛣️ Stack Choice Rationale: Three Roads</h1>
+
+  <div class="meta-box">
+    <p><strong>Track:</strong> General AI Fluency</p>
+    <p><strong>Assignment:</strong> Week 4 — "Three Roads"</p>
+    <p><strong>Student Name:</strong> Srikant Behera</p>
+    <p><strong>Selected Stack:</strong> Next.js (App Router) + Vercel + Tailwind CSS</p>
+  </div>
+
+  <h2>1. My Four Constraints</h2>
+  <ul>
+    <li><strong>Cost Constraint:</strong> $0 (Strictly free hosting, free tools, free API tiers).</li>
+    <li><strong>Skill Level:</strong> Intermediate developer (MCA student; comfortable with React, TypeScript, Node.js basics).</li>
+    <li><strong>Portfolio Content Needs:</strong> Displaying interactive AI tools (like real-time streaming chat), technical writeups, prompt logs, and GitHub repository links.</li>
+    <li><strong>Display Formats:</strong> Interactive embedded tools, responsive component cards, clean typography for reading long-form logs, and direct source links.</li>
+    <li><strong>Dynamic Data Need:</strong> <em>Not yet.</em> A full database backend is unnecessary overhead. Only lightweight serverless API route handlers are required to keep AI API keys secure.</li>
+  </ul>
+
+  <h2>2. Evaluation of Three Stack Options</h2>
+
+  <div class="road-card">
+    <h3>Road 1 (Simplest): Static HTML/CSS + GitHub Pages</h3>
+    <ul>
+      <li><strong>How to build:</strong> Standard HTML5, CSS3, and vanilla JavaScript.</li>
+      <li><strong>Hosting:</strong> GitHub Pages (Free).</li>
+      <li><strong>Backend Needed?</strong> No backend.</li>
+      <li><strong>Real Trade-off:</strong> Ultra-fast and zero maintenance, but lacks serverless API route support. Live AI features cannot be integrated without exposing secret API keys to browser client code.</li>
+    </ul>
+  </div>
+
+  <div class="road-card">
+    <h3>Road 2 (Chosen - Front-Runner): Next.js (App Router) + Vercel</h3>
+    <ul>
+      <li><strong>How to build:</strong> Next.js, React, Tailwind CSS, Vercel AI SDK.</li>
+      <li><strong>Hosting:</strong> Vercel (Free tier).</li>
+      <li><strong>Backend Needed?</strong> "Not yet" (No full database backend; uses Next.js Serverless Route Handlers for API requests).</li>
+      <li><strong>Real Trade-off:</strong> Slightly more setup than plain static HTML, but provides full React component flexibility, serverless route security for API keys, and instant Git continuous deployment.</li>
+    </ul>
+  </div>
+
+  <div class="road-card">
+    <h3>Road 3 (Most Powerful): Full-Stack React SPA + Express.js API + PostgreSQL</h3>
+    <ul>
+      <li><strong>How to build:</strong> React SPA, Express.js backend server, PostgreSQL database with Prisma.</li>
+      <li><strong>Hosting:</strong> Render (Free tier) + Supabase (Free PostgreSQL).</li>
+      <li><strong>Backend Needed?</strong> Yes, dedicated server and database backend.</li>
+      <li><strong>Real Trade-off:</strong> High maintenance overhead. Free-tier backend servers spin down during inactivity (causing 30s cold-start delays for visitors), wasting time on DB administration rather than AI experiences.</li>
+    </ul>
+  </div>
+
+  <h2>3. Pressure-Testing the Front-Runner</h2>
+  <ul>
+    <li><strong>What breaks if I pick the simplest (Static HTML)?</strong> I lose the ability to embed live, interactive AI tools safely. My portfolio would be limited to static screenshots.</li>
+    <li><strong>What do I maintain if I pick the most powerful (Full-Stack Express + DB)?</strong> I would have to maintain CORS configurations, database migrations, connection pools, and cold-start latency.</li>
+    <li><strong>Can I finish in two weeks?</strong> Yes. Next.js App Router allows modular component development while Vercel handles automated deployments.</li>
+    <li><strong>Does it show my work the way it needs to be shown?</strong> Yes. It supports both long-form reading and interactive live AI tools.</li>
+  </ul>
+
+  <div class="highlight-box">
+    <h2>4. Final Rationale & Decision</h2>
+    <p><strong>Selected Stack: Next.js (App Router) + Vercel + Tailwind CSS</strong></p>
+    <p><strong>Why I chose Next.js on Vercel:</strong> It strikes the exact balance between simplicity and modern web capabilities. It gives me built-in Serverless API Routes (<code>/api/chat</code>) to run AI features safely without managing a dedicated backend server.</p>
+    <p><strong>Why I rejected Static HTML:</strong> Static HTML limits the portfolio to passive reading. Demonstrating working AI streaming tools requires serverless execution.</p>
+    <p><strong>Why I rejected Full-Stack Express + Database:</strong> Answering the backend question honestly: <em>I do not need a database yet.</em> Database setup would consume development time needed for core portfolio features.</p>
+    <p><strong>Can I maintain this?</strong> Yes. Vercel automatically deploys updates directly from my GitHub repository's <code>main</code> branch with zero server management.</p>
+  </div>
+
+</body>
+</html>
