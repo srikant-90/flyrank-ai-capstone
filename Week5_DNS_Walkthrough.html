@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DNS & CNAME Technical Walkthrough - Srikant FlyRank AI Capstone</title>
+  <style>
+    :root {
+      --primary: #0f172a;
+      --accent: #2563eb;
+      --accent-light: #eff6ff;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --bg-subtle: #f8fafc;
+      --success: #16a34a;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.65;
+      color: var(--text);
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 24px;
+      background-color: #ffffff;
+    }
+    h1 {
+      color: var(--primary);
+      border-bottom: 2px solid #cbd5e1;
+      padding-bottom: 12px;
+      font-size: 28px;
+    }
+    h2 {
+      color: var(--primary);
+      margin-top: 36px;
+      font-size: 22px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+    }
+    h3 {
+      color: #334155;
+      font-size: 17px;
+      margin-top: 24px;
+    }
+    .meta-box {
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px;
+      margin-bottom: 28px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+    }
+    .meta-item {
+      font-size: 14px;
+    }
+    .meta-label {
+      font-weight: 600;
+      color: var(--text-muted);
+      display: block;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+    }
+    .meta-value {
+      font-weight: 500;
+      color: var(--primary);
+    }
+    .badge {
+      display: inline-block;
+      background-color: #dbeafe;
+      color: #1e40af;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-size: 12px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 14px;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background-color: var(--bg-subtle);
+      color: var(--primary);
+      font-weight: 600;
+    }
+    tr:nth-child(even) {
+      background-color: #fcfcfd;
+    }
+    .code-block {
+      background-color: #0f172a;
+      color: #e2e8f0;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      padding: 18px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-size: 13px;
+      line-height: 1.5;
+      margin: 16px 0;
+    }
+    .analogy-card {
+      border-left: 4px solid var(--accent);
+      background-color: var(--accent-light);
+      padding: 16px;
+      border-radius: 0 8px 8px 0;
+      margin: 16px 0;
+    }
+    .step-list {
+      list-style-type: none;
+      padding: 0;
+    }
+    .step-item {
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .step-number {
+      display: inline-block;
+      background-color: var(--accent);
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-right: 8px;
+    }
+    ul, ol {
+      padding-left: 24px;
+    }
+    li {
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>DNS & CNAME Technical Walkthrough: How Web Addresses & Subdomains Work</h1>
+
+  <div class="meta-box">
+    <div class="meta-item">
+      <span class="meta-label">Author</span>
+      <span class="meta-value">Srikant (FlyRank AI Intern)</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Track</span>
+      <span class="meta-value">General AI Fluency</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Target Subdomain</span>
+      <span class="meta-value"><span class="badge">srikant.flyrank.ai</span></span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Host Target</span>
+      <span class="meta-value">srikant-90.github.io</span>
+    </div>
+  </div>
+
+  <h2>1. What is a CNAME Record? (Explained for Everyone)</h2>
+  
+  <div class="analogy-card">
+    <h3>The Phonebook Alias Analogy</h3>
+    <p>Imagine you have a friend named <strong>Srikant</strong> who frequently moves between apartments. Instead of giving everyone his physical home address (an IP address like <code>185.199.108.153</code>), Srikant says: <em>"If you want to reach me, look up my alias <code>srikant.flyrank.ai</code> — it points directly to my permanent hosting address <code>srikant-90.github.io</code>."</em></p>
+  </div>
+
+  <p>In the Domain Name System (DNS), a <strong>CNAME Record</strong> (Canonical Name Record) is an alias entry. It tells the internet: <em>"Don't map this domain directly to a fixed IP address. Point <code>srikant.flyrank.ai</code> to <code>srikant-90.github.io</code>, and let GitHub/Netlify handle the exact IP routing!"</em></p>
+
+  <h3>Why We Use CNAME Records for Subdomains</h3>
+  <ul>
+    <li><strong>Dynamic IP Protection:</strong> Cloud hosting providers change server IPs dynamically for load balancing and DDoS shielding.</li>
+    <li><strong>Zero Maintenance:</strong> CNAME pointers eliminate manual IP maintenance when hosting infrastructures upgrade.</li>
+  </ul>
+
+  <h3>Target Record Mapping</h3>
+  <div class="code-block">
+NAME:               TYPE:     TARGET (VALUE):
+srikant.flyrank.ai  CNAME     srikant-90.github.io
+  </div>
+
+  <h2>2. Step-by-Step DNS Resolution Lifecycle</h2>
+  <p>When someone opens a browser and types <code>https://srikant.flyrank.ai</code>, a 7-step journey completes in milliseconds:</p>
+
+  <div class="step-list">
+    <div class="step-item">
+      <span class="step-number">STEP 1</span> <strong>Browser & Local Cache Check:</strong> The browser checks its local cache for recent IP mappings.
+    </div>
+    <div class="step-item">
+      <span class="step-number">STEP 2</span> <strong>Recursive DNS Resolver:</strong> If not cached, the browser queries a recursive resolver (e.g. ISP or Google <code>8.8.8.8</code>).
+    </div>
+    <div class="step-item">
+      <span class="step-number">STEP 3</span> <strong>Root Name Server (.):</strong> The resolver queries the global Root Name Server for <code>.ai</code> authority information.
+    </div>
+    <div class="step-item">
+      <span class="step-number">STEP 4</span> <strong>TLD Name Server (.ai):</strong> The <code>.ai</code> TLD server directs the resolver to FlyRank's Authoritative Name Server.
+    </div>
+    <div class="step-item">
+      <span class="step-number">STEP 5</span> <strong>FlyRank Authoritative DNS:</strong> FlyRank DNS returns the CNAME record: <code>srikant-90.github.io</code>.
+    </div>
+    <div class="step-item">
+      <span class="step-number">STEP 6</span> <strong>Host IP Resolution:</strong> The resolver fetches the active host IP address (e.g. <code>185.199.108.153</code>) and returns it to the browser.
+    </div>
+    <div class="step-item">
+      <span class="step-number">STEP 7</span> <strong>HTTPS & TLS Handshake:</strong> The browser connects over encrypted TLS/HTTPS, verifies the SSL certificate, and displays the padlock 🔒 icon.
+    </div>
+  </div>
+
+  <h2>3. FlyRank Subdomain Provisioning Checklist</h2>
+  <ol>
+    <li><strong>Ops Provisioning:</strong> Confirm Ops creates the DNS CNAME record mapping <code>srikant.flyrank.ai -> srikant-90.github.io</code>.</li>
+    <li><strong>Add Custom Domain in Hosting Settings:</strong> In GitHub Pages / Netlify settings, add <code>srikant.flyrank.ai</code> under Custom Domain.</li>
+    <li><strong>Wait for DNS Propagation:</strong> Allow 5 to 15 minutes for global DNS propagation.</li>
+    <li><strong>Verify HTTPS Certificate:</strong> Test <code>https://srikant.flyrank.ai</code> in an incognito window to verify padlock authorization.</li>
+  </ol>
+
+  <h2>4. Deployed Files & Explanation</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Filename</th>
+        <th>Purpose & Content Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>index.html</code></td>
+        <td>Root portfolio page with bio positioning, capstone projects showcase, and social links.</td>
+      </tr>
+      <tr>
+        <td><code>Week5_Agent_Design_Doc.html</code></td>
+        <td>Agent Design Specification presentation for ResearchScout AI Agent.</td>
+      </tr>
+      <tr>
+        <td><code>Week5_Build_Log.html</code></td>
+        <td>Checkpoint 1 MVP build log and terminal iteration trace.</td>
+      </tr>
+      <tr>
+        <td><code>Week5_DNS_Walkthrough.html</code></td>
+        <td>DNS resolution walkthrough and subdomain provisioning checklist.</td>
+      </tr>
+    </tbody>
+  </table>
+
+</body>
+</html>

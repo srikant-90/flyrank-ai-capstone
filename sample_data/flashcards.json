@@ -1,0 +1,70 @@
+{
+  "cards": [
+    {
+      "id": "card_1",
+      "front": "What is the core contribution of paper 'AutoDesign: Meta-Harness Optimization fo'?",
+      "back": "Transforming multimodal sources into condensed and structured media outputs can be fundamentally conceptualized as a long-horizon agentic process centered on a model-harness system... Source: http://arxiv.org/abs/2608.13560v1",
+      "tags": [
+        "ai-research",
+        "arxiv",
+        "paper-summary"
+      ],
+      "source": "http://arxiv.org/abs/2608.13560v1"
+    },
+    {
+      "id": "card_2",
+      "front": "What is the core contribution of paper 'OmniScientist: An Omni-Modal Omni-Discip'?",
+      "back": "Recent advances in foundation models have enabled AI scientists to automate increasingly complete research workflows, from hypothesis generation and code execution to manuscript pr... Source: http://arxiv.org/abs/2608.13558v1",
+      "tags": [
+        "ai-research",
+        "arxiv",
+        "paper-summary"
+      ],
+      "source": "http://arxiv.org/abs/2608.13558v1"
+    },
+    {
+      "id": "card_3",
+      "front": "What is the core contribution of paper 'Localised Horizons and Holographic Therm'?",
+      "back": "In holography, four-dimensional confining gauge theories are often modelled by five-dimensional Einstein--scalar gravity by choosing a specific form of the scalar potential. In a l... Source: http://arxiv.org/abs/2608.13557v1",
+      "tags": [
+        "ai-research",
+        "arxiv",
+        "paper-summary"
+      ],
+      "source": "http://arxiv.org/abs/2608.13557v1"
+    },
+    {
+      "id": "card_1",
+      "front": "What is the core contribution of paper 'AutoDesign: Meta-Harness Optimization fo'?",
+      "back": "Transforming multimodal sources into condensed and structured media outputs can be fundamentally conceptualized as a long-horizon agentic process centered on a model-harness system... Source: http://arxiv.org/abs/2608.13560v1",
+      "tags": [
+        "ai-research",
+        "arxiv",
+        "paper-summary"
+      ],
+      "source": "http://arxiv.org/abs/2608.13560v1"
+    },
+    {
+      "id": "card_2",
+      "front": "What is the core contribution of paper 'OmniScientist: An Omni-Modal Omni-Discip'?",
+      "back": "Recent advances in foundation models have enabled AI scientists to automate increasingly complete research workflows, from hypothesis generation and code execution to manuscript pr... Source: http://arxiv.org/abs/2608.13558v1",
+      "tags": [
+        "ai-research",
+        "arxiv",
+        "paper-summary"
+      ],
+      "source": "http://arxiv.org/abs/2608.13558v1"
+    },
+    {
+      "id": "card_3",
+      "front": "What is the core contribution of paper 'Localised Horizons and Holographic Therm'?",
+      "back": "In holography, four-dimensional confining gauge theories are often modelled by five-dimensional Einstein--scalar gravity by choosing a specific form of the scalar potential. In a l... Source: http://arxiv.org/abs/2608.13557v1",
+      "tags": [
+        "ai-research",
+        "arxiv",
+        "paper-summary"
+      ],
+      "source": "http://arxiv.org/abs/2608.13557v1"
+    }
+  ]
+}

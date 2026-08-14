@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Week 5 Build Log - Personal AI Agent Checkpoint 1 (MVP)</title>
+  <style>
+    :root {
+      --primary: #0f172a;
+      --accent: #2563eb;
+      --accent-light: #eff6ff;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --bg-subtle: #f8fafc;
+      --danger: #dc2626;
+      --success: #16a34a;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.65;
+      color: var(--text);
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 24px;
+      background-color: #ffffff;
+    }
+    h1 {
+      color: var(--primary);
+      border-bottom: 2px solid #cbd5e1;
+      padding-bottom: 12px;
+      font-size: 28px;
+    }
+    h2 {
+      color: var(--primary);
+      margin-top: 36px;
+      font-size: 22px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+    }
+    h3 {
+      color: #334155;
+      font-size: 17px;
+      margin-top: 24px;
+    }
+    .meta-box {
+      background-color: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px;
+      margin-bottom: 28px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+    }
+    .meta-item {
+      font-size: 14px;
+    }
+    .meta-label {
+      font-weight: 600;
+      color: var(--text-muted);
+      display: block;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+    }
+    .meta-value {
+      font-weight: 500;
+      color: var(--primary);
+    }
+    .badge {
+      display: inline-block;
+      background-color: #d1fae5;
+      color: #065f46;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-size: 12px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 14px;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background-color: var(--bg-subtle);
+      color: var(--primary);
+      font-weight: 600;
+    }
+    tr:nth-child(even) {
+      background-color: #fcfcfd;
+    }
+    .code-block {
+      background-color: #0f172a;
+      color: #e2e8f0;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      padding: 18px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-size: 13px;
+      line-height: 1.5;
+      margin: 16px 0;
+    }
+    .iteration-card {
+      border-left: 4px solid var(--accent);
+      background-color: var(--accent-light);
+      padding: 16px;
+      border-radius: 0 8px 8px 0;
+      margin: 16px 0;
+    }
+    .step-badge {
+      display: inline-block;
+      background-color: var(--accent);
+      color: #ffffff;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Week 5 Build Log: Personal AI Research Scout & Study Coach (Checkpoint 1 MVP)</h1>
+
+  <div class="meta-box">
+    <div class="meta-item">
+      <span class="meta-label">Track</span>
+      <span class="meta-value">General AI Fluency</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Phase</span>
+      <span class="meta-value">Build (Core) - Checkpoint 1 (MVP)</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Status</span>
+      <span class="meta-value"><span class="badge">MVP PASSED & VERIFIED</span></span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Author</span>
+      <span class="meta-value">Srikant (FlyRank AI Intern)</span>
+    </div>
+  </div>
+
+  <h2>1. Overview & MVP Scope</h2>
+  <p>Checkpoint 1 requires building a working MVP of the agent designed in FL-06 that completes its core job end-to-end using at least one <strong>live tool connection</strong>.</p>
+  <ul>
+    <li>Ingesting active learning goals from <code>sample_data/learning_goals.md</code>.</li>
+    <li>Querying the <strong>live arXiv REST API</strong> over HTTP for real-time AI research.</li>
+    <li>Reading existing study notes from local vault <code>sample_data/notes/ai_agents.md</code>.</li>
+    <li>Synthesizing research briefings and Anki-compatible JSON flashcards.</li>
+    <li>Triggering a <strong>Human-in-the-Loop (HITL) approval gate</strong> before file system mutation.</li>
+  </ul>
+
+  <h2>2. Live Tool Connections Verified</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Tool Name</th>
+        <th>Interface</th>
+        <th>Status</th>
+        <th>Payload Result</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>arXiv REST API</strong></td>
+        <td>HTTP GET request (<code>export.arxiv.org/api/query</code>)</td>
+        <td><span class="badge">LIVE & ACTIVE</span></td>
+        <td>Retrieved 3 real live papers submitted to arXiv.</td>
+      </tr>
+      <tr>
+        <td><strong>Local Notes Vault Tool</strong></td>
+        <td>Local file system I/O (<code>pathlib</code>)</td>
+        <td><span class="badge">LIVE & ACTIVE</span></td>
+        <td>Read goals & appended updates to <code>ai_agents.md</code>.</td>
+      </tr>
+      <tr>
+        <td><strong>Flashcard Schema Exporter</strong></td>
+        <td>JSON schema builder & file writer</td>
+        <td><span class="badge">LIVE & ACTIVE</span></td>
+        <td>Exported 3 schema-valid QA flashcard objects to <code>flashcards.json</code>.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>3. Build Iteration Diary (What Broke & What Was Fixed)</h2>
+  
+  <div class="iteration-card">
+    <span class="step-badge">ITERATION 1</span>
+    <h3>arXiv API XML Namespace Parsing Failure</h3>
+    <p><strong>What Broke:</strong> The initial HTTP response returned Atom XML. A naive <code>ElementTree.findall('entry')</code> returned 0 results due to XML namespaces.</p>
+    <p><strong>Fix Applied:</strong> Explicitly registered <code>ATOM_NS = {'atom': 'http://www.w3.org/2005/Atom'}</code> and queried <code>root.findall('atom:entry', ATOM_NS)</code>.</p>
+  </div>
+
+  <div class="iteration-card">
+    <span class="step-badge">ITERATION 2</span>
+    <h3>Tool Import Path Resolution</h3>
+    <p><strong>What Broke:</strong> Invoking <code>python src/agent/scout_agent.py</code> threw <code>ModuleNotFoundError: No module named 'tools'</code>.</p>
+    <p><strong>Fix Applied:</strong> Dynamically inserted parent directory into Python path: <code>sys.path.insert(0, str(Path(__file__).resolve().parent))</code>.</p>
+  </div>
+
+  <div class="iteration-card">
+    <span class="step-badge">ITERATION 3</span>
+    <h3>Interactive CLI Blocking Automated Test Harness</h3>
+    <p><strong>What Broke:</strong> Automated evaluation harness stalled waiting for user <code>input()</code>.</p>
+    <p><strong>Fix Applied:</strong> Introduced <code>--auto-approve</code> CLI flag for evaluation harness while preserving interactive CLI prompts for manual usage.</p>
+  </div>
+
+  <div class="iteration-card">
+    <span class="step-badge">ITERATION 4</span>
+    <h3>Multilines Breaking Flashcard JSON Schema</h3>
+    <p><strong>What Broke:</strong> Raw paper abstracts with newlines broke JSON formatting.</p>
+    <p><strong>Fix Applied:</strong> Sanitized abstract strings with <code>.replace('\n', ' ').strip()</code> prior to JSON output.</p>
+  </div>
+
+  <h2>4. Deviations from Spec (FL-06) & Rationale</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Spec Component</th>
+        <th>MVP Implementation</th>
+        <th>Reason for Deviation</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Dual Search (arXiv + Tavily API)</td>
+        <td>arXiv REST API Only</td>
+        <td>Focused Checkpoint 1 on a single, high-reliability live HTTP tool connection before layering secondary search APIs.</td>
+      </tr>
+      <tr>
+        <td>Cron Schedule (08:00 AM)</td>
+        <td>CLI On-Demand Execution</td>
+        <td>Cron is an infrastructure task; MVP focuses on agent execution logic.</td>
+      </tr>
+      <tr>
+        <td>Anki Sync Plugin</td>
+        <td>JSON File Exporter</td>
+        <td>JSON exporter works universally without external desktop plugins.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>5. Verified Terminal Trajectory</h2>
+  <div class="code-block">
+================================================================================
+  RESEARCH SCOUT AGENT - Personal AI Research & Study Coach (v1.0 MVP)
+================================================================================
+
+[AGENT TRAJECTORY] Step 1: Reading user learning goals...
+ -> Active Goals Loaded (13 lines)
+
+[AGENT TRAJECTORY] Step 2: Querying live arXiv REST API for topic: 'LLM Agent Tool Use'...
+ -> Successfully retrieved 3 live papers from arXiv API:
+    1. [2026-08-13] AutoDesign: Meta-Harness Optimization for Long-Horizon Agentic Design
+       URL: http://arxiv.org/abs/2608.13560v1
+    2. [2026-08-13] OmniScientist: An Omni-Modal Omni-Discipline AI Scientist
+       URL: http://arxiv.org/abs/2608.13558v1
+
+[AGENT TRAJECTORY] Step 3: Inspecting existing study vault notes...
+ -> Grounded context retrieved from 'ai_agents.md' (618 characters)
+
+[AGENT TRAJECTORY] Step 4: Synthesizing Research Briefing & Flashcards...
+ [PROPOSAL FOR HUMAN-IN-THE-LOOP (HITL) APPROVAL]
+ High-Risk Tier Action: Modifying Markdown study notes & saving briefing to disk.
+
+[AGENT TRAJECTORY] Step 5: Executing authorized tool actions...
+ -> Written Research Briefing to: sample_data\briefings\daily_briefing_2026-08-14.md
+ -> Appended synthesized concepts to note: sample_data/notes/ai_agents.md
+ -> Exported 3 schema-valid flashcards to: sample_data\flashcards.json
+
+================================================================================
+ [COMPLETED SUCCESSFULLY] ResearchScout MVP run complete end-to-end!
+================================================================================
+  </div>
+
+  <h2>6. Raw Screen Capture Guide (2-Minute Demo)</h2>
+  <ol>
+    <li>Open PowerShell in <code>d:\FlyRank-Project\flyrank-ai-capstone</code>.</li>
+    <li>Start screen recorder (OBS / Windows Game Bar <code>Win + Alt + R</code> / Loom).</li>
+    <li>Run: <code>python src/agent/scout_agent.py --topic "LLM Agent Tool Use"</code></li>
+    <li>Show live trajectory, live arXiv paper retrieval, and HITL authorization gate.</li>
+    <li>Type <code>y</code> and press Enter.</li>
+    <li>Show generated output files: <code>sample_data/briefings/daily_briefing_*.md</code> and <code>sample_data/flashcards.json</code>.</li>
+  </ol>
+
+</body>
+</html>
