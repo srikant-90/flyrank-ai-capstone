@@ -3,21 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Srikant - AI Intern & Practitioner | FlyRank AI Capstone Portfolio. Building practical personal AI agents, workflows, and tool calling pipelines.">
+  <meta name="description" content="Srikant · AI Intern & Practitioner | FlyRank AI Capstone Portfolio. Engineering reliable AI agents, live tool-calling pipelines, and deterministic workflows.">
   <title>Srikant | AI Engineer & Capstone Practitioner</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  
+  <!-- Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
   <style>
     :root {
-      --bg-primary: #0b0f19;
-      --bg-secondary: #111827;
-      --bg-card: #1f2937;
-      --text-primary: #f9fafb;
-      --text-secondary: #9ca3af;
-      --accent: #3b82f6;
-      --accent-hover: #2563eb;
-      --accent-glow: rgba(59, 130, 246, 0.25);
-      --border: #374151;
-      --success: #10b981;
-      --max-width: 1100px;
+      --bg-canvas: #090d16;
+      --bg-card: #131b2e;
+      --bg-card-hover: #18233c;
+      --border: #1e293b;
+      --border-focus: #334155;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --accent: #14b8a6;
+      --accent-hover: #0d9488;
+      --accent-bg: rgba(20, 184, 166, 0.12);
+      --font-heading: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --max-w: 1040px;
     }
 
     * {
@@ -27,26 +37,29 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--bg-primary);
-      color: var(--text-primary);
-      line-height: 1.6;
-      padding-bottom: 60px;
+      background-color: var(--bg-canvas);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: 80px;
     }
 
     a {
       color: var(--accent);
       text-decoration: none;
-      transition: color 0.2s ease;
+      transition: color 0.15s ease;
     }
 
     a:hover {
-      color: #60a5fa;
+      color: #2dd4bf;
     }
 
+    /* Header */
     header {
       border-bottom: 1px solid var(--border);
-      background-color: rgba(17, 24, 39, 0.8);
+      background-color: rgba(9, 13, 22, 0.85);
       backdrop-filter: blur(12px);
       position: sticky;
       top: 0;
@@ -54,29 +67,37 @@
     }
 
     .nav-container {
-      max-width: var(--max-width);
+      max-width: var(--max-w);
       margin: 0 auto;
-      padding: 18px 24px;
+      padding: 16px 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
     .logo {
+      font-family: var(--font-heading);
       font-weight: 700;
-      font-size: 20px;
-      letter-spacing: -0.5px;
-      color: var(--text-primary);
+      font-size: 18px;
+      letter-spacing: -0.4px;
+      color: var(--text-main);
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 24px;
+      height: 24px;
     }
 
     .logo-badge {
+      font-family: var(--font-mono);
       font-size: 11px;
-      background-color: rgba(59, 130, 246, 0.15);
+      background-color: var(--accent-bg);
       color: var(--accent);
-      border: 1px solid rgba(59, 130, 246, 0.3);
+      border: 1px solid rgba(20, 184, 166, 0.3);
       padding: 2px 8px;
       border-radius: 9999px;
       font-weight: 600;
@@ -90,74 +111,145 @@
     }
 
     .nav-links a {
-      color: var(--text-secondary);
-      font-size: 14px;
+      color: var(--text-muted);
+      font-size: 13.5px;
       font-weight: 500;
     }
 
     .nav-links a:hover {
-      color: var(--text-primary);
+      color: var(--text-main);
     }
 
     .btn {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
       background-color: var(--accent);
-      color: #ffffff;
-      padding: 10px 20px;
+      color: #090d16;
+      padding: 9px 18px;
       border-radius: 8px;
       font-weight: 600;
-      font-size: 14px;
-      transition: all 0.2s ease;
+      font-size: 13.5px;
+      font-family: var(--font-body);
+      transition: all 0.15s ease;
       border: none;
       cursor: pointer;
     }
 
     .btn:hover {
       background-color: var(--accent-hover);
-      color: #ffffff;
+      color: #090d16;
       transform: translateY(-1px);
-      box-shadow: 0 4px 12px var(--accent-glow);
     }
 
     .btn-secondary {
       background-color: transparent;
       border: 1px solid var(--border);
-      color: var(--text-primary);
+      color: var(--text-main);
     }
 
     .btn-secondary:hover {
       background-color: var(--bg-card);
-      border-color: #4b5563;
-      box-shadow: none;
+      border-color: var(--border-focus);
+      color: var(--text-main);
     }
 
+    /* Main Container */
     main {
-      max-width: var(--max-width);
+      max-width: var(--max-w);
       margin: 0 auto;
       padding: 0 24px;
     }
 
+    /* Hero */
     .hero {
-      padding: 72px 0 48px;
+      padding: 64px 0 48px;
       display: grid;
-      grid-template-columns: 1.2fr 0.8fr;
-      gap: 40px;
+      grid-template-columns: 1.25fr 0.75fr;
+      gap: 36px;
       align-items: center;
     }
 
+    /* Responsive Breakpoints & Mobile Polish */
     @media (max-width: 768px) {
       .hero {
         grid-template-columns: 1fr;
-        padding: 40px 0 32px;
+        padding: 36px 0 24px;
+        gap: 24px;
+      }
+      .hero-title {
+        font-size: 27px;
+        line-height: 1.25;
+      }
+      .hero-subtitle {
+        font-size: 15px;
+        margin-bottom: 20px;
+      }
+      .nav-links {
+        gap: 14px;
+      }
+      .nav-links a {
+        font-size: 12.5px;
+      }
+      .contact-layout {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+      }
+      .section {
+        padding: 40px 0;
+      }
+      .section-title {
+        font-size: 21px;
       }
     }
 
+    @media (max-width: 480px) {
+      .nav-container {
+        padding: 12px 16px;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .nav-links {
+        width: 100%;
+        justify-content: space-between;
+        padding-top: 8px;
+        border-top: 1px solid var(--border);
+      }
+      .hero-title {
+        font-size: 24px;
+      }
+      .btn {
+        width: 100%;
+        justify-content: center;
+        min-height: 44px;
+      }
+      .hero-cta {
+        flex-direction: column;
+        width: 100%;
+      }
+    }
+
+    .hero-tag {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
     .hero-title {
-      font-size: 42px;
-      font-weight: 800;
-      line-height: 1.15;
-      letter-spacing: -1px;
-      margin-bottom: 16px;
+      font-family: var(--font-heading);
+      font-size: 34px;
+      font-weight: 700;
+      line-height: 1.25;
+      letter-spacing: -0.8px;
+      margin-bottom: 18px;
+      color: var(--text-main);
     }
 
     .hero-title span {
@@ -165,91 +257,98 @@
     }
 
     .hero-subtitle {
-      font-size: 18px;
-      color: var(--text-secondary);
-      margin-bottom: 28px;
-      max-width: 600px;
+      font-size: 16px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      line-height: 1.6;
     }
 
     .hero-cta {
       display: flex;
-      gap: 16px;
+      gap: 12px;
       flex-wrap: wrap;
     }
 
     .hero-card {
-      background-color: var(--bg-secondary);
+      background-color: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 16px;
+      border-radius: 14px;
       padding: 24px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
     }
 
     .hero-card-title {
-      font-size: 13px;
+      font-family: var(--font-mono);
+      font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 1px;
-      color: var(--text-secondary);
-      margin-bottom: 12px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
       font-weight: 600;
     }
 
     .hero-card-stat {
-      font-size: 28px;
+      font-family: var(--font-heading);
+      font-size: 24px;
       font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: 4px;
+      color: var(--text-main);
+      margin-bottom: 6px;
     }
 
     .status-indicator {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      font-size: 13px;
-      color: var(--success);
-      background-color: rgba(16, 185, 129, 0.1);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--accent);
+      background-color: var(--accent-bg);
       padding: 4px 12px;
       border-radius: 9999px;
-      margin-top: 12px;
+      margin-top: 14px;
+      border: 1px solid rgba(20, 184, 166, 0.25);
     }
 
     .status-dot {
-      width: 8px;
-      height: 8px;
-      background-color: var(--success);
+      width: 7px;
+      height: 7px;
+      background-color: var(--accent);
       border-radius: 50%;
-      box-shadow: 0 0 8px var(--success);
+      box-shadow: 0 0 8px var(--accent);
     }
 
+    /* Sections */
     .section {
-      padding: 60px 0;
+      padding: 56px 0;
       border-top: 1px solid var(--border);
     }
 
     .section-header {
-      margin-bottom: 36px;
+      margin-bottom: 32px;
     }
 
     .section-title {
-      font-size: 28px;
+      font-family: var(--font-heading);
+      font-size: 24px;
       font-weight: 700;
-      letter-spacing: -0.5px;
-      margin-bottom: 8px;
+      letter-spacing: -0.4px;
+      margin-bottom: 6px;
+      color: var(--text-main);
     }
 
     .section-desc {
-      color: var(--text-secondary);
-      font-size: 16px;
+      color: var(--text-muted);
+      font-size: 15px;
     }
 
     .grid-2 {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 24px;
+      gap: 20px;
     }
 
     .card {
-      background-color: var(--bg-secondary);
+      background-color: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 24px;
@@ -260,12 +359,14 @@
     }
 
     .card:hover {
-      border-color: #4b5563;
+      border-color: var(--border-focus);
+      background-color: var(--bg-card-hover);
       transform: translateY(-2px);
     }
 
     .card-tag {
-      font-size: 12px;
+      font-family: var(--font-mono);
+      font-size: 11px;
       color: var(--accent);
       font-weight: 600;
       text-transform: uppercase;
@@ -274,16 +375,19 @@
     }
 
     .card-title {
-      font-size: 20px;
+      font-family: var(--font-heading);
+      font-size: 19px;
       font-weight: 700;
       margin-bottom: 10px;
+      color: var(--text-main);
     }
 
     .card-body {
-      color: var(--text-secondary);
+      color: var(--text-muted);
       font-size: 14px;
       margin-bottom: 20px;
       flex-grow: 1;
+      line-height: 1.6;
     }
 
     .card-footer {
@@ -292,11 +396,13 @@
       align-items: center;
       padding-top: 16px;
       border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
     .card-link {
       font-weight: 600;
-      font-size: 14px;
+      font-size: 13.5px;
       display: inline-flex;
       align-items: center;
       gap: 4px;
@@ -309,58 +415,62 @@
     }
 
     .social-box {
-      background-color: var(--bg-secondary);
+      background-color: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 20px;
+      padding: 18px;
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 14px;
       transition: all 0.2s ease;
+      text-decoration: none;
     }
 
     .social-box:hover {
       border-color: var(--accent);
-      background-color: var(--bg-card);
+      background-color: var(--bg-card-hover);
     }
 
     .social-icon {
-      width: 42px;
-      height: 42px;
-      background-color: var(--bg-card);
+      width: 38px;
+      height: 38px;
+      background-color: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
       border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 20px;
+      font-size: 18px;
     }
 
     .social-name {
+      font-family: var(--font-heading);
       font-weight: 600;
-      font-size: 16px;
-      color: var(--text-primary);
+      font-size: 15px;
+      color: var(--text-main);
     }
 
     .social-desc {
       font-size: 12px;
-      color: var(--text-secondary);
+      color: var(--text-muted);
     }
 
     footer {
       text-align: center;
-      color: var(--text-secondary);
-      font-size: 14px;
-      margin-top: 60px;
+      color: var(--text-muted);
+      font-size: 13px;
+      margin-top: 56px;
       padding-top: 24px;
       border-top: 1px solid var(--border);
     }
 
-    /* Modal Styling */
+    /* Modal */
     .modal-overlay {
       display: none;
       position: fixed;
       top:0; left:0; width:100%; height:100%;
-      background: rgba(0,0,0,0.8);
+      background: rgba(9, 13, 22, 0.85);
+      backdrop-filter: blur(8px);
       z-index: 1000;
       justify-content: center;
       align-items: center;
@@ -368,12 +478,12 @@
     }
 
     .modal-card {
-      background: var(--bg-secondary);
+      background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: 16px;
-      max-width: 500px;
+      max-width: 480px;
       width: 100%;
-      padding: 32px;
+      padding: 28px;
       position: relative;
     }
 
@@ -381,8 +491,8 @@
       position: absolute;
       top: 16px; right: 16px;
       background: none; border: none;
-      color: var(--text-secondary);
-      font-size: 24px; cursor: pointer;
+      color: var(--text-muted);
+      font-size: 22px; cursor: pointer;
     }
   </style>
 </head>
@@ -390,14 +500,20 @@
 
   <header>
     <div class="nav-container">
-      <div class="logo">
+      <a href="index.html" class="logo">
+        <svg class="logo-icon" viewBox="0 0 32 32">
+          <rect width="32" height="32" rx="8" fill="#090D16" stroke="#1E293B" stroke-width="1.5"/>
+          <path d="M10 9h12v3.5H14.5a1.5 1.5 0 0 0 0 3h3a4.5 4.5 0 0 1 0 9H10v-3.5h7.5a1.5 1.5 0 0 0 0-3h-3a4.5 4.5 0 0 1 0-9z" fill="#F1F5F9"/>
+          <circle cx="23" cy="22" r="2.5" fill="#14B8A6"/>
+        </svg>
         Srikant <span class="logo-badge">FlyRank AI Capstone</span>
-      </div>
+      </a>
       <ul class="nav-links">
         <li><a href="#about">About</a></li>
         <li><a href="#projects">Projects</a></li>
-        <li><a href="#docs">Docs & Evals</a></li>
-        <li><a href="#contact" class="btn btn-secondary">Connect</a></li>
+        <li><a href="#identity-kit">Visual Identity</a></li>
+        <li><a href="#docs">Docs</a></li>
+        <li><button onclick="openModal('booking-modal')" class="btn btn-secondary" style="padding: 6px 14px; font-size: 13px;">Connect</button></li>
       </ul>
     </div>
   </header>
@@ -407,22 +523,27 @@
     <!-- Hero Section -->
     <section class="hero" id="about">
       <div>
-        <h1 class="hero-title">Building <span>Autonomous AI Agents</span> & Intelligent Systems</h1>
+        <div class="hero-tag">
+          <span>General AI Fluency Track</span>
+        </div>
+        <h1 class="hero-title">
+          I engineer <span>reliable AI agents</span>, live tool-calling pipelines, and deterministic workflows.
+        </h1>
         <p class="hero-subtitle">
-          Hi, I'm <strong>Srikant</strong> — an AI Intern and Practitioner pursuing the General AI Fluency Capstone at FlyRank. I specialize in building deterministic agent workflows, real-time API tools, structured evals, and guardrail architectures.
+          Hi, I'm <strong>Srikant</strong> — an AI Intern and Practitioner pursuing the General AI Fluency Capstone at FlyRank. I turn unstructured generative AI into verifiable software through live tool connections, structured evaluations, and human-in-the-loop guardrails.
         </p>
         <div class="hero-cta">
-          <a href="https://github.com/srikant-90" target="_blank" rel="noopener" class="btn">View GitHub Profile</a>
-          <button onclick="openModal('booking-modal')" class="btn btn-secondary">Schedule a Call</button>
+          <a href="#projects" class="btn">Explore Live Agent &rarr;</a>
+          <a href="https://github.com/srikant-90/flyrank-ai-capstone" target="_blank" rel="noopener" class="btn btn-secondary">GitHub Repository</a>
         </div>
       </div>
       <div class="hero-card">
-        <div class="hero-card-title">Capstone Progress</div>
-        <div class="hero-card-stat">Week 5 Core Build</div>
-        <p style="color: var(--text-secondary); font-size: 14px;">Personal AI Research Scout Agent & Live Site Deployment</p>
+        <div class="hero-card-title">Capstone Architecture</div>
+        <div class="hero-card-stat">Autonomous Agent MVP</div>
+        <p style="color: var(--text-muted); font-size: 13.5px;">Personal AI Research Scout Agent querying arXiv REST API with verified JSON flashcard export.</p>
         <div class="status-indicator">
           <div class="status-dot"></div>
-          Agent MVP Live & Verified
+          Live Tool Integration Verified
         </div>
       </div>
     </section>
@@ -430,19 +551,19 @@
     <!-- Featured Capstone Projects -->
     <section class="section" id="projects">
       <div class="section-header">
-        <h2 class="section-title">Capstone Projects & AI Agents</h2>
-        <p class="section-desc">Practical AI agents, tool-calling frameworks, and no-code pipelines built during the FlyRank AI Internship.</p>
+        <h2 class="section-title">Capstone Projects & Autonomous Agents</h2>
+        <p class="section-desc">Practical AI agents, tool-calling frameworks, and deterministic pipelines built during the FlyRank AI Internship.</p>
       </div>
 
       <div class="grid-2">
 
-        <!-- ResearchScout Agent -->
+        <!-- ResearchScout Agent (Lead Project) -->
         <div class="card">
           <div>
-            <div class="card-tag">Week 5 • Core Agent Build</div>
+            <div class="card-tag">Week 5 • Lead Agent Build (MVP)</div>
             <h3 class="card-title">ResearchScout AI Agent</h3>
             <p class="card-body">
-              Personal AI Research Scout & Study Coach built in Python. Connects live to arXiv REST API (`export.arxiv.org`), synthesizes papers against learning goals, exports Anki flashcards, and enforces Human-in-the-Loop (HITL) approval guardrails.
+              Personal AI Research Scout & Study Coach in Python. Ingests learning goals, queries live arXiv REST API (`export.arxiv.org`), reads local note vaults, synthesizes findings, outputs schema-validated Anki flashcards, and executes Human-in-the-Loop (HITL) approval gates.
             </p>
           </div>
           <div class="card-footer">
@@ -454,10 +575,10 @@
         <!-- Workflows vs Agents Explainer -->
         <div class="card">
           <div>
-            <div class="card-tag">Week 4 • Architecture</div>
+            <div class="card-tag">Week 4 • Architecture & MCP</div>
             <h3 class="card-title">Workflows vs. Agents & MCP Explainer</h3>
             <p class="card-body">
-              Deep dive comparing deterministic workflow automation against autonomous LLM agent loops, featuring Model Context Protocol (MCP) server integration patterns and tool declarations.
+              Deep-dive architectural comparison between deterministic workflows and autonomous LLM reasoning loops, featuring Model Context Protocol (MCP) server declarations and tool integration patterns.
             </p>
           </div>
           <div class="card-footer">
@@ -468,10 +589,10 @@
         <!-- No-Code AI Pipeline -->
         <div class="card">
           <div>
-            <div class="card-tag">Week 4 • Pipeline</div>
+            <div class="card-tag">Week 4 • Automation Pipeline</div>
             <h3 class="card-title">No-Code AI Pipeline Walkthrough</h3>
             <p class="card-body">
-              Complete walkthrough of no-code AI automation pipelines, evaluating platform tradeoffs between n8n, Custom GPTs, and Claude Projects.
+              Complete walkthrough of no-code AI automation pipelines, evaluating platform tradeoffs between n8n webhook nodes, Custom GPTs, and Claude Projects.
             </p>
           </div>
           <div class="card-footer">
@@ -479,13 +600,27 @@
           </div>
         </div>
 
+        <!-- FE-08 Lifecycle Motion Button -->
+        <div class="card">
+          <div>
+            <div class="card-tag">Week 6 • Micro-Interactions (FE-08)</div>
+            <h3 class="card-title">Lifecycle Motion Button System</h3>
+            <p class="card-body">
+              State-communicating button system choreographing full lifecycle transitions (Idle &rarr; Hover &rarr; Active &rarr; Loading &rarr; Success / Error &rarr; Idle) with compositor-friendly transforms, force triggers, and reduced motion compliance.
+            </p>
+          </div>
+          <div class="card-footer">
+            <a href="FE08_Lifecycle_Button_Motion_Showcase.html" target="_blank" class="card-link">Launch Interactive Demo &rarr;</a>
+          </div>
+        </div>
+
         <!-- Prompt Iteration Log -->
         <div class="card">
           <div>
-            <div class="card-tag">Week 1–3 • Prompting & UI</div>
-            <h3 class="card-title">Prompt Iteration Log & Generative UI</h3>
+            <div class="card-tag">Week 1–3 • Prompt Engineering</div>
+            <h3 class="card-title">FL-01 Prompt Iteration Log</h3>
             <p class="card-body">
-              Structured prompt engineering iteration log, prompt-ladder backend code, and Generative UI tool showcase.
+              5-stage prompt evolution from naive prompt to strict anti-fabrication constraint output, documenting failure modes, few-shot hallucination traps, and format enforcement.
             </p>
           </div>
           <div class="card-footer">
@@ -496,99 +631,174 @@
       </div>
     </section>
 
-    <!-- Technical Specs & DNS Walkthrough -->
-    <section class="section" id="docs">
+    <!-- Visual Identity & Judgment Deliverable -->
+    <section class="section" id="identity-kit">
       <div class="section-header">
-        <h2 class="section-title">Technical Infrastructure & DNS Docs</h2>
-        <p class="section-desc">Infrastructure walkthroughs, CNAME record resolutions, and subdomain provisioning guides.</p>
+        <h2 class="section-title">Visual Identity, Content Map & AI Judgment Log</h2>
+        <p class="section-desc">The portfolio rule: the design is the calm frame, never the painting. Decisions made once and repeated.</p>
       </div>
 
       <div class="grid-2">
         <div class="card">
           <div>
-            <div class="card-tag">Infrastructure • Web Hosting</div>
-            <h3 class="card-title">DNS & CNAME Walkthrough Document</h3>
+            <div class="card-tag">Week 6 • Identity Spec</div>
+            <h3 class="card-title">Visual Identity & Content Map Spec</h3>
             <p class="card-body">
-              Comprehensive guide explaining CNAME DNS records, the 7-step DNS resolution lifecycle from browser cache to authoritative name servers, HTTPS SSL certificates, and the checklist for provisioning `srikant.flyrank.ai`.
+              Complete specification featuring the 10-option AI claim sharpening process, ordered content map, CTA laddering hierarchy, WCAG AAA 4-color palette audit, and the honest &ldquo;still need to gather&rdquo; proof tracker.
             </p>
           </div>
           <div class="card-footer">
-            <a href="Week5_DNS_Walkthrough.html" target="_blank" class="card-link">Read DNS Walkthrough &rarr;</a>
+            <a href="Week6_Portfolio_Identity_and_Content_Map.html" class="card-link">Explore Interactive Showcase &rarr;</a>
+            <a href="Week6_Portfolio_Identity_and_Content_Map.md" target="_blank" class="card-link">Markdown Spec &rarr;</a>
           </div>
         </div>
 
         <div class="card">
           <div>
-            <div class="card-tag">Repository • Open Source</div>
-            <h3 class="card-title">FlyRank Capstone Codebase</h3>
+            <div class="card-tag">Week 6 • AI Curation</div>
+            <h3 class="card-title">Kill Your Darlings: AI Rejection Log</h3>
             <p class="card-body">
-              Open source GitHub repository containing all capstone deliverables, Node.js / Python source files, unit tests, and design document artifacts.
+              Technical critique documenting 4 rejected AI-generated concepts (glowing purple neural nets, sci-fi cyborg heads, glassmorphic bubbles) and why authentic terminal code captures beat synthetic AI slop.
             </p>
           </div>
           <div class="card-footer">
-            <a href="https://github.com/srikant-90/flyrank-ai-capstone" target="_blank" class="card-link">Explore GitHub Repo &rarr;</a>
+            <a href="Week6_Portfolio_Identity_and_Content_Map.html#images" class="card-link">Read Rejection Log &rarr;</a>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Connect & Social Links -->
-    <section class="section" id="contact">
+    <!-- Technical Specs & System Explanations -->
+    <section class="section" id="docs">
       <div class="section-header">
-        <h2 class="section-title">Connect & Profiles</h2>
-        <p class="section-desc">Reach out for collaborations, AI agent design, or capstone inquiries.</p>
+        <h2 class="section-title">Technical Infrastructure & System Explanations</h2>
+        <p class="section-desc">Infrastructure walkthroughs, CNAME record resolutions, and plain-words build architecture breakdowns.</p>
       </div>
 
-      <div class="links-grid">
-        <a href="https://github.com/srikant-90" target="_blank" rel="noopener" class="social-box">
-          <div class="social-icon">💻</div>
+      <div class="grid-2">
+        <div class="card">
           <div>
-            <div class="social-name">GitHub</div>
-            <div class="social-desc">github.com/srikant-90</div>
+            <div class="card-tag">Week 6 • Build Ownership</div>
+            <h3 class="card-title">Explain It Like You Built It</h3>
+            <p class="card-body">
+              Plain-words explanation of how our modal overlays, CSS fixed layers, and JavaScript event bubbling (`event.stopPropagation()`) work under the hood.
+            </p>
           </div>
-        </a>
-
-        <a href="https://linkedin.com/in/srikant" target="_blank" rel="noopener" class="social-box">
-          <div class="social-icon">💼</div>
-          <div>
-            <div class="social-name">LinkedIn</div>
-            <div class="social-desc">linkedin.com/in/srikant</div>
-          </div>
-        </a>
-
-        <div onclick="openModal('cv-modal')" class="social-box" style="cursor: pointer;">
-          <div class="social-icon">📄</div>
-          <div>
-            <div class="social-name">Curriculum Vitae</div>
-            <div class="social-desc">View / Download CV</div>
+          <div class="card-footer">
+            <a href="Week6_Explain_Your_Build.html" target="_blank" class="card-link">Read Plain-Words Breakdown &rarr;</a>
           </div>
         </div>
 
-        <div onclick="openModal('booking-modal')" class="social-box" style="cursor: pointer;">
-          <div class="social-icon">📅</div>
+        <div class="card">
           <div>
-            <div class="social-name">Schedule Call</div>
-            <div class="social-desc">Cal.com Booking</div>
+            <div class="card-tag">Week 6 • Mobile Polish (CP-1)</div>
+            <h3 class="card-title">Mobile Audit & Design Crit Fix Log</h3>
+            <p class="card-body">
+              Mobile-first responsiveness audit across 375px/768px viewports, 10-second proof test results, and structured design review feedback sorting.
+            </p>
+          </div>
+          <div class="card-footer">
+            <a href="Week6_Mobile_Audit_and_Fix_Log.html" target="_blank" class="card-link">View Mobile Fix Log &rarr;</a>
           </div>
         </div>
+
+        <div class="card">
+          <div>
+            <div class="card-tag">Week 6 • Live Dynamic Feature</div>
+            <h3 class="card-title">Wire One Real Thing (Contact Pipeline)</h3>
+            <p class="card-body">
+              Live serverless contact form wired end-to-end on Netlify's free tier with honeypot anti-spam, async fetch delivery, and plain-words data flow explainer.
+            </p>
+          </div>
+          <div class="card-footer">
+            <a href="Week6_Wire_One_Real_Thing.html" target="_blank" class="card-link">View Feature & Data Flow Spec &rarr;</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Connect & Working Contact Form -->
+    <section class="section" id="contact">
+      <div class="section-header">
+        <h2 class="section-title">Connect & Send a Message</h2>
+        <p class="section-desc">Have an inquiry or project collaboration? Send a message directly to my inbox via our live serverless pipeline.</p>
+      </div>
+
+      <div class="contact-layout" style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start;">
+        
+        <!-- Live Form Component -->
+        <div class="card" style="padding: 24px;">
+          <form id="portfolio-contact-form" name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+            <input type="hidden" name="form-name" value="contact" />
+            <p style="display:none;"><label>Don't fill this out: <input name="bot-field" /></label></p>
+
+            <div style="margin-bottom: 16px;">
+              <label for="contact-name" style="display:block; font-size: 13px; font-weight: 600; margin-bottom: 6px;">Your Name</label>
+              <input type="text" id="contact-name" name="name" required minlength="2" placeholder="e.g. Alex Smith" style="width:100%; background:#060911; border:1px solid var(--border); border-radius:8px; padding:10px 12px; color:var(--text-main); font-size:14px; outline:none;" />
+            </div>
+
+            <div style="margin-bottom: 16px;">
+              <label for="contact-email" style="display:block; font-size: 13px; font-weight: 600; margin-bottom: 6px;">Work Email</label>
+              <input type="email" id="contact-email" name="email" required placeholder="alex@company.com" style="width:100%; background:#060911; border:1px solid var(--border); border-radius:8px; padding:10px 12px; color:var(--text-main); font-size:14px; outline:none;" />
+            </div>
+
+            <div style="margin-bottom: 16px;">
+              <label for="contact-msg" style="display:block; font-size: 13px; font-weight: 600; margin-bottom: 6px;">Message</label>
+              <textarea id="contact-msg" name="message" rows="3" required minlength="10" placeholder="Discussing AI agent design or technical collaboration..." style="width:100%; background:#060911; border:1px solid var(--border); border-radius:8px; padding:10px 12px; color:var(--text-main); font-size:14px; outline:none; resize:vertical;"></textarea>
+            </div>
+
+            <button type="submit" id="main-submit-btn" class="btn" style="width:100%; justify-content:center;">
+              <span>Send Message &rarr;</span>
+            </button>
+            <div id="main-form-status" style="display:none; margin-top:12px; font-size:13px; padding:8px 12px; border-radius:6px;"></div>
+          </form>
+        </div>
+
+        <!-- Social Links & Booking -->
+        <div class="links-grid" style="grid-template-columns: 1fr;">
+          <a href="https://github.com/srikant-90" target="_blank" rel="noopener" class="social-box">
+            <div class="social-icon">💻</div>
+            <div>
+              <div class="social-name">GitHub</div>
+              <div class="social-desc">github.com/srikant-90</div>
+            </div>
+          </a>
+
+          <a href="https://linkedin.com/in/srikant" target="_blank" rel="noopener" class="social-box">
+            <div class="social-icon">💼</div>
+            <div>
+              <div class="social-name">LinkedIn</div>
+              <div class="social-desc">linkedin.com/in/srikant</div>
+            </div>
+          </a>
+
+          <div onclick="openModal('booking-modal')" class="social-box" style="cursor: pointer;">
+            <div class="social-icon">📅</div>
+            <div>
+              <div class="social-name">Schedule Call</div>
+              <div class="social-desc">Cal.com Booking</div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </section>
 
   </main>
 
   <footer>
-    <p>&copy; 2026 Srikant. Built for the FlyRank AI Internship Capstone (General AI Fluency Track).</p>
+    <p>&copy; 2026 Srikant · FlyRank AI Internship Capstone (General AI Fluency Track)</p>
   </footer>
 
   <!-- Booking Modal -->
   <div id="booking-modal" class="modal-overlay" onclick="closeModal('booking-modal')">
     <div class="modal-card" onclick="event.stopPropagation()">
       <button class="modal-close" onclick="closeModal('booking-modal')">&times;</button>
-      <h3 style="margin-bottom: 12px;">Schedule a Meeting</h3>
-      <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 14px;">Select a time to discuss AI agent design, capstone projects, or technical collaboration.</p>
-      <div style="background: var(--bg-primary); padding: 16px; border-radius: 8px; border: 1px solid var(--border); text-align: center;">
-        <p style="font-weight: 600; margin-bottom: 8px;">Cal.com Integration</p>
-        <p style="color: var(--text-secondary); font-size: 13px;">Direct booking: <a href="https://cal.com/srikant" target="_blank">cal.com/srikant</a></p>
+      <h3 style="margin-bottom: 10px; font-family: var(--font-heading);">Schedule a Technical Chat</h3>
+      <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 14px;">Select a time to discuss AI agent design, tool-calling pipelines, or capstone collaboration.</p>
+      <div style="background: var(--bg-canvas); padding: 16px; border-radius: 8px; border: 1px solid var(--border); text-align: center;">
+        <p style="font-weight: 600; margin-bottom: 6px;">Cal.com Integration</p>
+        <p style="color: var(--text-muted); font-size: 13px;">Direct booking: <a href="https://cal.com/srikant" target="_blank">cal.com/srikant</a></p>
       </div>
     </div>
   </div>
@@ -597,14 +807,15 @@
   <div id="cv-modal" class="modal-overlay" onclick="closeModal('cv-modal')">
     <div class="modal-card" onclick="event.stopPropagation()">
       <button class="modal-close" onclick="closeModal('cv-modal')">&times;</button>
-      <h3 style="margin-bottom: 12px;">Srikant - Curriculum Vitae</h3>
-      <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 14px;">AI Engineer & Practitioner specializing in LLM Agent Tool Use, Python, and Full-Stack Web Development.</p>
-      <ul style="color: var(--text-secondary); font-size: 14px; padding-left: 20px; margin-bottom: 20px;">
-        <li>FlyRank AI Internship - General AI Fluency Track (2026)</li>
-        <li>ResearchScout Agent Developer (arXiv API, Python, LiteLLM)</li>
+      <h3 style="margin-bottom: 10px; font-family: var(--font-heading);">Srikant · Practitioner Profile</h3>
+      <p style="color: var(--text-muted); margin-bottom: 16px; font-size: 14px;">AI Engineer & Practitioner specializing in LLM Agent Tool Use, Python, and Full-Stack Systems.</p>
+      <ul style="color: var(--text-muted); font-size: 13.5px; padding-left: 20px; margin-bottom: 20px; line-height: 1.6;">
+        <li>FlyRank AI Internship — General AI Fluency Track (2026)</li>
+        <li>ResearchScout Agent Developer (arXiv REST API, Python, HITL Guardrails)</li>
+        <li>Deterministic Prompt Architecture (Anti-fabrication, Schema Validation)</li>
         <li>Full-Stack Development (Node.js, TypeScript, React, HTML/CSS)</li>
       </ul>
-      <a href="https://github.com/srikant-90" target="_blank" class="btn" style="width: 100%; text-align: center;">View Full Profile on GitHub</a>
+      <a href="https://github.com/srikant-90" target="_blank" class="btn" style="width: 100%; justify-content: center;">View Full Profile on GitHub</a>
     </div>
   </div>
 
@@ -614,6 +825,47 @@
     }
     function closeModal(id) {
       document.getElementById(id).style.display = 'none';
+    }
+
+    // Live Serverless Contact Form Submission Handler
+    const mainForm = document.getElementById('portfolio-contact-form');
+    const mainBtn = document.getElementById('main-submit-btn');
+    const mainStatus = document.getElementById('main-form-status');
+
+    if (mainForm) {
+      mainForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        mainBtn.disabled = true;
+        mainBtn.innerHTML = '<span>Sending Message...</span>';
+        mainStatus.style.display = 'none';
+
+        try {
+          const formData = new FormData(mainForm);
+          await fetch('/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams(formData).toString()
+          });
+
+          mainBtn.innerHTML = '<span>✓ Message Sent!</span>';
+          mainBtn.style.backgroundColor = 'var(--success)';
+          mainStatus.textContent = 'Thanks! Your message reached my inbox. I will get back to you within 24 hours.';
+          mainStatus.style.backgroundColor = 'rgba(16, 185, 129, 0.15)';
+          mainStatus.style.color = '#10b981';
+          mainStatus.style.border = '1px solid rgba(16, 185, 129, 0.3)';
+          mainStatus.style.display = 'block';
+          mainForm.reset();
+        } catch (err) {
+          mainBtn.disabled = false;
+          mainBtn.innerHTML = '<span>Retry Sending &rarr;</span>';
+          mainBtn.style.backgroundColor = '#f43f5e';
+          mainStatus.textContent = 'Unable to send message right now. Please email directly or connect on LinkedIn.';
+          mainStatus.style.backgroundColor = 'rgba(244, 63, 94, 0.15)';
+          mainStatus.style.color = '#f43f5e';
+          mainStatus.style.border = '1px solid rgba(244, 63, 94, 0.3)';
+          mainStatus.style.display = 'block';
+        }
+      });
     }
   </script>
 </body>

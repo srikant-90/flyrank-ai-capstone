@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Week 6 Deliverable · Mobile Audit, Fix Log & Design Crit · Srikant</title>
+  <meta name="description" content="FlyRank AI Internship Week 6 / Checkpoint 1 Deliverable: Mobile-first responsiveness audit, 10-second proof test, and design review feedback fix log.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-canvas: #090d16;
+      --bg-card: #131b2e;
+      --bg-card-hover: #18233c;
+      --border: #1e293b;
+      --border-focus: #334155;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --accent: #14b8a6;
+      --accent-hover: #0d9488;
+      --accent-bg: rgba(20, 184, 166, 0.12);
+      --success: #10b981;
+      --success-bg: rgba(16, 185, 129, 0.16);
+      --error: #f43f5e;
+      --error-bg: rgba(244, 63, 94, 0.16);
+      --font-heading: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --max-w: 880px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-canvas);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: 90px;
+    }
+
+    .topbar {
+      border-bottom: 1px solid var(--border);
+      background-color: rgba(9, 13, 22, 0.85);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .topbar-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 14px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text-main);
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: var(--font-mono);
+      background-color: var(--accent-bg);
+      color: var(--accent);
+      border: 1px solid rgba(20, 184, 166, 0.3);
+    }
+
+    .container {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .doc-header {
+      padding: 48px 0 32px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--accent);
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    h1 {
+      font-family: var(--font-heading);
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.8px;
+      line-height: 1.25;
+      margin-bottom: 14px;
+    }
+
+    .lead-text {
+      font-size: 16px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .section {
+      padding: 40px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-title {
+      font-family: var(--font-heading);
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text-main);
+    }
+
+    .section-desc {
+      color: var(--text-muted);
+      font-size: 14.5px;
+      margin-bottom: 24px;
+    }
+
+    /* Fix Log Cards */
+    .fix-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin-bottom: 18px;
+    }
+
+    .fix-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .fix-title {
+      font-family: var(--font-heading);
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .fix-desc {
+      color: var(--text-muted);
+      font-size: 13.5px;
+      margin-bottom: 10px;
+    }
+
+    .fix-action {
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      color: var(--accent);
+      background-color: var(--accent-bg);
+      padding: 8px 12px;
+      border-radius: 6px;
+      display: inline-block;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 18px;
+      margin: 20px 0;
+    }
+
+    .stat-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+    }
+
+    .stat-num {
+      font-family: var(--font-heading);
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      margin-top: 16px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      text-align: left;
+    }
+
+    th {
+      background-color: var(--bg-card);
+      color: var(--text-main);
+      font-weight: 600;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(30, 41, 59, 0.5);
+      color: var(--text-muted);
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background-color: var(--accent);
+      color: #090d16;
+      padding: 9px 18px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13.5px;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+
+    .btn:hover {
+      background-color: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a href="index.html" class="brand">
+        <svg width="22" height="22" viewBox="0 0 32 32">
+          <rect width="32" height="32" rx="8" fill="#090D16" stroke="#1E293B" stroke-width="1.5"/>
+          <path d="M10 9h12v3.5H14.5a1.5 1.5 0 0 0 0 3h3a4.5 4.5 0 0 1 0 9H10v-3.5h7.5a1.5 1.5 0 0 0 0-3h-3a4.5 4.5 0 0 1 0-9z" fill="#F1F5F9"/>
+          <circle cx="23" cy="22" r="2.5" fill="#14B8A6"/>
+        </svg>
+        <span>Srikant · Capstone Portfolio</span>
+      </a>
+      <span class="badge">Week 6 · Checkpoint 1</span>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <section class="doc-header">
+      <div class="eyebrow">Week 6 · Make It Real (Checkpoint 1)</div>
+      <h1>Mobile Audit, Fix Log & Design Crit Review</h1>
+      <p class="lead-text">
+        The jump from amateur to trustworthy is a short, boring checklist almost everyone skips. Here is the comprehensive mobile-first audit, 10-second proof test verification, and structured peer crit fix log.
+      </p>
+    </section>
+
+    <!-- Part 1: Mobile Fix Log -->
+    <section class="section">
+      <h2 class="section-title">1. Mobile-First Fix Log (Problems Found & Fixed)</h2>
+      <p class="section-desc">
+        Tested across real mobile viewports (375px–414px) and tablet widths (768px).
+      </p>
+
+      <div class="fix-card">
+        <div class="fix-header">
+          <div class="fix-title">1. Contact Section Column Squeeze on Mobile</div>
+          <span class="badge">RESOLVED</span>
+        </div>
+        <p class="fix-desc">
+          <strong>Problem:</strong> Form and social boxes rendered side-by-side on 375px screens, squishing form inputs into unusable 160px columns.
+        </p>
+        <div class="fix-action">
+          ✓ Added responsive `.contact-layout` media query collapsing to 1 column below 768px.
+        </div>
+      </div>
+
+      <div class="fix-card">
+        <div class="fix-header">
+          <div class="fix-title">2. Navigation Header Wrapping on Narrow Viewports</div>
+          <span class="badge">RESOLVED</span>
+        </div>
+        <p class="fix-desc">
+          <strong>Problem:</strong> Logo and 4 nav links collided on narrow 375px screens, causing awkward visual jitter.
+        </p>
+        <div class="fix-action">
+          ✓ Enabled clean flex-wrapping with top-border separator on screens &lt; 480px.
+        </div>
+      </div>
+
+      <div class="fix-card">
+        <div class="fix-header">
+          <div class="fix-title">3. Touch Target Sizing (WCAG AAA Target Size)</div>
+          <span class="badge">RESOLVED</span>
+        </div>
+        <p class="fix-desc">
+          <strong>Problem:</strong> Interactive buttons were under 40px, causing missed taps on mobile devices.
+        </p>
+        <div class="fix-action">
+          ✓ Enforced `min-height: 44px` and full-width touch area for mobile CTAs.
+        </div>
+      </div>
+
+      <div class="fix-card">
+        <div class="fix-header">
+          <div class="fix-title">4. Fluid Headline Typography Scaling</div>
+          <span class="badge">RESOLVED</span>
+        </div>
+        <p class="fix-desc">
+          <strong>Problem:</strong> 34px hero headline caused awkward 3-line breaks on smaller phones.
+        </p>
+        <div class="fix-action">
+          ✓ Scaled hero headline fluidly to 24px–27px on mobile screens.
+        </div>
+      </div>
+    </section>
+
+    <!-- Part 2: 10-Second Test & Crit -->
+    <section class="section">
+      <h2 class="section-title">2. Survive the Crit (10-Second Proof Test & Feedback Sorting)</h2>
+      <p class="section-desc">
+        Reviewed with a peer reviewer alongside our Week 1 Proof Statement without defending.
+      </p>
+
+      <div class="grid-2">
+        <div class="stat-card">
+          <div class="stat-num" style="color: var(--success);">10-Second Test: PASS</div>
+          <div class="stat-label">
+            <strong>"In ten seconds, what do I do?"</strong><br>
+            Reviewer instantly identified: <em>&ldquo;You build deterministic AI agents and live tool-calling workflows connecting LLMs to APIs.&rdquo;</em>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-num" style="color: var(--success);">Proof Test: PASS</div>
+          <div class="stat-label">
+            <strong>"Would you believe I am good at it?"</strong><br>
+            Reviewer confirmed: <em>&ldquo;Yes, because ResearchScout is a working Python agent with live arXiv API logs and JSON schema validation.&rdquo;</em>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feedback Sorting Table -->
+      <h3 style="font-size: 16px; font-weight: 600; margin: 24px 0 12px; color: var(--text-main);">Structured Feedback Sorting</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Feedback Category</th>
+              <th>Reviewer Feedback Item</th>
+              <th>Action Taken</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Must-Fix</strong></td>
+              <td>Contact form was cramped on mobile viewports.</td>
+              <td>Collapsed form into 1-column layout below 768px.</td>
+              <td><span class="badge" style="background: var(--success-bg); color: var(--success);">FIXED LIVE</span></td>
+            </tr>
+            <tr>
+              <td><strong>Must-Fix</strong></td>
+              <td>Touch targets on action buttons felt tight.</td>
+              <td>Set 44px min-height across mobile CTAs.</td>
+              <td><span class="badge" style="background: var(--success-bg); color: var(--success);">FIXED LIVE</span></td>
+            </tr>
+            <tr>
+              <td><strong>Must-Fix</strong></td>
+              <td>Mobile header links needed breathing room.</td>
+              <td>Added top-border divider and flex-wrap.</td>
+              <td><span class="badge" style="background: var(--success-bg); color: var(--success);">FIXED LIVE</span></td>
+            </tr>
+            <tr>
+              <td><strong>Nice-to-Have</strong></td>
+              <td>Add terminal CLI demo GIF recording.</td>
+              <td>Planned for Week 9/10 final launch polish.</td>
+              <td><span class="badge">SCHEDULED</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Pass/Revise Audit -->
+    <section class="section">
+      <h2 class="section-title">3. Pass / Revise Self-Audit</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Evaluation Criteria</th>
+              <th>Status</th>
+              <th>Verification Detail</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Genuinely works on mobile</strong></td>
+              <td><span class="badge" style="background: var(--success-bg); color: var(--success);">PASS</span></td>
+              <td>Verified on 375px/414px/768px; zero horizontal scroll.</td>
+            </tr>
+            <tr>
+              <td><strong>Readability & Contrast</strong></td>
+              <td><span class="badge" style="background: var(--success-bg); color: var(--success);">PASS</span></td>
+              <td>15.8:1 AAA text contrast; crisp SVG icons.</td>
+            </tr>
+            <tr>
+              <td><strong>100% Links Functional</strong></td>
+              <td><span class="badge" style="background: var(--success-bg); color: var(--success);">PASS</span></td>
+              <td>All case study docs, modals, and GitHub links return 200 OK.</td>
+            </tr>
+            <tr>
+              <td><strong>10-Second Test & Crit Sorting</strong></td>
+              <td><span class="badge" style="background: var(--success-bg); color: var(--success);">PASS</span></td>
+              <td>Must-fixes deployed live; 10-second proof landed clearly.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="margin-top: 24px;">
+        <a href="index.html" class="btn">← Back to Portfolio</a>
+      </div>
+    </section>
+
+  </div>
+
+</body>
+</html>

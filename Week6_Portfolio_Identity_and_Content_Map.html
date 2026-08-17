@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Week 6 Deliverable · Visual Identity, Content Map & AI Judgment Log</title>
+  <meta name="description" content="FlyRank AI Internship Week 6 Deliverable: Portfolio Identity Kit, Content Map, CTA Laddering, and AI Image Curation / Rejection Log.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-canvas: #090d16;
+      --bg-card: #131b2e;
+      --bg-card-hover: #18233c;
+      --border: #1e293b;
+      --border-focus: #334155;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --accent: #14b8a6;
+      --accent-hover: #0d9488;
+      --accent-bg: rgba(20, 184, 166, 0.12);
+      --danger: #f43f5e;
+      --danger-bg: rgba(244, 63, 94, 0.12);
+      --success: #10b981;
+      --success-bg: rgba(16, 185, 129, 0.12);
+      --warning: #f59e0b;
+      --warning-bg: rgba(245, 158, 11, 0.12);
+      --font-heading: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --max-w: 960px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-canvas);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: 80px;
+    }
+
+    /* Top Navigation */
+    .topbar {
+      border-bottom: 1px solid var(--border);
+      background-color: rgba(9, 13, 22, 0.85);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .topbar-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 14px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text-main);
+    }
+
+    .brand-logo {
+      width: 28px;
+      height: 28px;
+    }
+
+    .brand-text {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: -0.3px;
+    }
+
+    .badge-track {
+      background-color: var(--accent-bg);
+      color: var(--accent);
+      border: 1px solid rgba(20, 184, 166, 0.3);
+      padding: 3px 10px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      transition: color 0.15s;
+    }
+
+    .nav-links a:hover {
+      color: var(--text-main);
+    }
+
+    /* Layout */
+    .container {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Header / Hero */
+    .doc-header {
+      padding: 48px 0 32px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--accent);
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    h1 {
+      font-family: var(--font-heading);
+      font-size: 36px;
+      font-weight: 700;
+      letter-spacing: -0.8px;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+
+    .lead-text {
+      font-size: 17px;
+      color: var(--text-muted);
+      max-width: 760px;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .meta-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      padding-top: 16px;
+      border-top: 1px solid rgba(30, 41, 59, 0.6);
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .meta-item strong {
+      color: var(--text-main);
+    }
+
+    /* Section Styling */
+    .section {
+      padding: 48px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-title {
+      font-family: var(--font-heading);
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-desc {
+      color: var(--text-muted);
+      font-size: 15px;
+      margin-bottom: 28px;
+      max-width: 740px;
+    }
+
+    /* Callout & Principle Boxes */
+    .principle-banner {
+      background-color: rgba(20, 184, 166, 0.06);
+      border: 1px solid rgba(20, 184, 166, 0.25);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 32px;
+    }
+
+    .principle-title {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--accent);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .principle-body {
+      color: var(--text-main);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* Winning Claim Box */
+    .claim-showcase {
+      background-color: var(--bg-card);
+      border: 1px solid var(--accent);
+      border-radius: 14px;
+      padding: 28px;
+      margin-bottom: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .claim-showcase::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      width: 4px;
+      background-color: var(--accent);
+    }
+
+    .claim-tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--accent);
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .claim-quote {
+      font-family: var(--font-heading);
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--text-main);
+      line-height: 1.35;
+      letter-spacing: -0.3px;
+      margin-bottom: 16px;
+    }
+
+    .claim-breakdown {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .claim-pill {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .claim-pill strong {
+      color: var(--text-main);
+      display: block;
+      margin-bottom: 2px;
+      font-size: 13px;
+    }
+
+    /* Tables */
+    .table-wrap {
+      overflow-x: auto;
+      margin-bottom: 28px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      text-align: left;
+    }
+
+    th {
+      background-color: var(--bg-card);
+      color: var(--text-main);
+      font-weight: 600;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      font-family: var(--font-heading);
+      font-size: 13px;
+    }
+
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(30, 41, 59, 0.5);
+      color: var(--text-muted);
+      vertical-align: top;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background-color: rgba(255, 255, 255, 0.015);
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      font-family: var(--font-mono);
+    }
+
+    .badge-pass {
+      background-color: var(--success-bg);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .badge-reject {
+      background-color: var(--danger-bg);
+      color: var(--danger);
+      border: 1px solid rgba(244, 63, 94, 0.3);
+    }
+
+    .badge-neutral {
+      background-color: rgba(148, 163, 184, 0.1);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+
+    /* Cards Grid */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+      margin-bottom: 28px;
+    }
+
+    .card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 22px;
+      transition: all 0.2s;
+    }
+
+    .card:hover {
+      border-color: var(--border-focus);
+      background-color: var(--bg-card-hover);
+    }
+
+    .card-num {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--accent);
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .card-head {
+      font-family: var(--font-heading);
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 8px;
+    }
+
+    .card-body {
+      color: var(--text-muted);
+      font-size: 13.5px;
+      line-height: 1.55;
+      margin-bottom: 14px;
+    }
+
+    .card-cta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* Color Swatches Showcase */
+    .palette-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .swatch-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .swatch-color {
+      height: 72px;
+      width: 100%;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+
+    .swatch-meta {
+      padding: 12px 14px;
+    }
+
+    .swatch-name {
+      font-family: var(--font-heading);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 2px;
+    }
+
+    .swatch-hex {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .swatch-role {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Style Guide Snippet Box */
+    .snippet-box {
+      background-color: #05080f;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 20px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: #e2e8f0;
+      line-height: 1.7;
+      margin-bottom: 28px;
+      position: relative;
+    }
+
+    .snippet-label {
+      position: absolute;
+      top: -10px;
+      left: 16px;
+      background-color: var(--bg-canvas);
+      padding: 0 8px;
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+    }
+
+    /* Rejection Cards */
+    .rejection-card {
+      background-color: var(--bg-card);
+      border: 1px solid rgba(244, 63, 94, 0.3);
+      border-radius: 12px;
+      padding: 22px;
+      margin-bottom: 18px;
+      position: relative;
+    }
+
+    .rejection-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .rejection-title {
+      font-family: var(--font-heading);
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .rejection-prompt {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      background: rgba(0,0,0,0.3);
+      padding: 8px 12px;
+      border-radius: 6px;
+      color: #cbd5e1;
+      margin: 8px 0 12px;
+      border-left: 2px solid var(--danger);
+    }
+
+    .rejection-critique {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+
+    .rejection-replacement {
+      font-size: 13px;
+      color: var(--accent);
+      background-color: var(--accent-bg);
+      padding: 8px 12px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background-color: var(--accent);
+      color: #090d16;
+      padding: 9px 18px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13.5px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn:hover {
+      background-color: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background-color: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-main);
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--bg-card);
+      border-color: var(--border-focus);
+    }
+
+    footer {
+      max-width: var(--max-w);
+      margin: 40px auto 0;
+      padding: 24px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13px;
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Topbar -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a href="index.html" class="brand">
+        <svg class="brand-logo" viewBox="0 0 32 32">
+          <rect width="32" height="32" rx="8" fill="#090D16" stroke="#1E293B" stroke-width="1.5"/>
+          <path d="M10 9h12v3.5H14.5a1.5 1.5 0 0 0 0 3h3a4.5 4.5 0 0 1 0 9H10v-3.5h7.5a1.5 1.5 0 0 0 0-3h-3a4.5 4.5 0 0 1 0-9z" fill="#F1F5F9"/>
+          <circle cx="23" cy="22" r="2.5" fill="#14B8A6"/>
+        </svg>
+        <span class="brand-text">Srikant · Capstone Portfolio</span>
+      </a>
+      <span class="badge-track">General AI Fluency · Week 3</span>
+      <ul class="nav-links">
+        <li><a href="#claim">One-Line Claim</a></li>
+        <li><a href="#map">Content Map</a></li>
+        <li><a href="#identity">Identity Kit</a></li>
+        <li><a href="#images">Image Judgment</a></li>
+        <li><a href="index.html">← Back to Portfolio</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- Document Header -->
+    <section class="doc-header">
+      <div class="eyebrow">
+        <span>Week 3 · Map It & Give It a Face</span>
+      </div>
+      <h1>Consistency, Not Talent: Visual Identity & Content Map</h1>
+      <p class="lead-text">
+        The fundamental rule of a portfolio: the design is the calm frame, never the painting. This document establishes the one-line claim, structural page map, WCAG AAA identity kit, and image judgment log for the General AI Fluency Capstone.
+      </p>
+      <div class="meta-bar">
+        <div class="meta-item"><span>Intern:</span> <strong>Srikant</strong></div>
+        <div class="meta-item"><span>Track:</span> <strong>General AI Fluency</strong></div>
+        <div class="meta-item"><span>Status:</span> <span class="badge badge-pass">PASSED AUDIT</span></div>
+        <div class="meta-item"><span>Date:</span> <strong>August 2026</strong></div>
+      </div>
+    </section>
+
+    <!-- Core Principle Banner -->
+    <div class="principle-banner" style="margin-top: 32px;">
+      <div class="principle-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+        The Portfolio Rule & Visual Restraint
+      </div>
+      <p class="principle-body">
+        If a design is the most memorable thing on the page, something is backwards. People visit to see verified technical work (working agent tools, evaluation logs, clean code). A quiet, confident frame makes the work look valuable, not smaller.
+      </p>
+    </div>
+
+    <!-- Part 1: The One-Line Claim -->
+    <section class="section" id="claim">
+      <h2 class="section-title">Part 1: The Through-Line — One-Line Claim</h2>
+      <p class="section-desc">
+        A visitor forms a lasting impression in five seconds. Using AI to explore 10 distinct options, the claim was refined and sharpened into a single memorable sentence.
+      </p>
+
+      <!-- Winning Claim Box -->
+      <div class="claim-showcase">
+        <div class="claim-tag">Sharpened Winning Value Proposition</div>
+        <div class="claim-quote">
+          &ldquo;I engineer reliable AI agents, live tool-calling pipelines, and deterministic workflows that turn generative models into verified systems.&rdquo;
+        </div>
+        <div class="claim-breakdown">
+          <div class="claim-pill">
+            <strong>Active Verb</strong>
+            &ldquo;I engineer&rdquo; (technical discipline over passive hobbyist vibe)
+          </div>
+          <div class="claim-pill">
+            <strong>Core Competencies</strong>
+            AI agents, tool-calling pipelines, deterministic workflows
+          </div>
+          <div class="claim-pill">
+            <strong>Outcome & Proof</strong>
+            Turning unstructured AI generation into verified systems
+          </div>
+        </div>
+      </div>
+
+      <!-- Exploration Table -->
+      <h3 style="font-size: 16px; margin-bottom: 12px; font-weight: 600;">AI Prompt Exploration & Sharpening Log (10 Evaluated Options)</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Generated Option</th>
+              <th>Critique / Failure Mode</th>
+              <th>Decision</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>01</strong></td>
+              <td>&ldquo;Full-Stack AI Developer building next-generation intelligent applications.&rdquo;</td>
+              <td>Cliché and generic; sounds like a template. Zero specific proof of capability.</td>
+              <td><span class="badge badge-reject">Rejected</span></td>
+            </tr>
+            <tr>
+              <td><strong>02</strong></td>
+              <td>&ldquo;AI enthusiast exploring LLMs, agentic frameworks, and modern workflows.&rdquo;</td>
+              <td>Passive student tone; &ldquo;exploring&rdquo; communicates lack of production readiness.</td>
+              <td><span class="badge badge-reject">Rejected</span></td>
+            </tr>
+            <tr>
+              <td><strong>03</strong></td>
+              <td>&ldquo;Building autonomous Python agents and prompt engineering pipelines.&rdquo;</td>
+              <td>Plain task list; states what I code, not the business value or reliability outcome.</td>
+              <td><span class="badge badge-reject">Rejected</span></td>
+            </tr>
+            <tr>
+              <td><strong>04</strong></td>
+              <td>&ldquo;Bridging the gap between raw LLM intelligence and enterprise tooling.&rdquo;</td>
+              <td>Abstract corporate phrasing; lacks concrete software engineering grounding.</td>
+              <td><span class="badge badge-reject">Rejected</span></td>
+            </tr>
+            <tr>
+              <td><strong>05</strong></td>
+              <td>&ldquo;AI Practitioner engineering reliable LLM tool-calling agents, deterministic evals, and workflows.&rdquo;</td>
+              <td>Accurate technical grounding, but slightly heavy and rhythmic syllable overload.</td>
+              <td><span class="badge badge-neutral">Candidate</span></td>
+            </tr>
+            <tr>
+              <td><strong>06</strong></td>
+              <td>&ldquo;I turn unpredictable AI models into reliable, tool-connected software.&rdquo;</td>
+              <td>Punchy contrast, but slightly too conversational for lead headline.</td>
+              <td><span class="badge badge-neutral">Candidate</span></td>
+            </tr>
+            <tr>
+              <td><strong>07</strong></td>
+              <td>&ldquo;Engineering resilient AI agents with live tool integrations and human-in-the-loop guardrails.&rdquo;</td>
+              <td>High technical domain signal, but narrowed solely to agents without mentioning workflows.</td>
+              <td><span class="badge badge-neutral">Candidate</span></td>
+            </tr>
+            <tr>
+              <td><strong>08</strong></td>
+              <td>&ldquo;Architecting autonomous agents and prompt systems that don't hallucinate.&rdquo;</td>
+              <td>Negative framing (&ldquo;don't hallucinate&rdquo;) focuses on model flaws rather than engineering solutions.</td>
+              <td><span class="badge badge-reject">Rejected</span></td>
+            </tr>
+            <tr>
+              <td><strong>09</strong></td>
+              <td>&ldquo;General AI Fluency practitioner crafting verified agent workflows from prompt to production.&rdquo;</td>
+              <td>On-track, but &ldquo;prompt to production&rdquo; is overused marketing phrasing.</td>
+              <td><span class="badge badge-reject">Rejected</span></td>
+            </tr>
+            <tr>
+              <td><strong>10</strong></td>
+              <td>&ldquo;Building practical AI agents and deterministic workflows that connect LLMs to real-world APIs.&rdquo;</td>
+              <td>Grounded and clear; refined into final active engineering claim.</td>
+              <td><span class="badge badge-pass">Sharpened to Winner</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Part 2: Content Map & CTA Laddering -->
+    <section class="section" id="map">
+      <h2 class="section-title">Part 2: Content Map & CTA Laddering</h2>
+      <p class="section-desc">
+        Every section has a defined order, leads with the strongest proof (ResearchScout AI Agent), and features a named Call-to-Action laddering up to the primary goal: reviewing live code artifacts and scheduling a technical conversation.
+      </p>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-num">SECTION 01 · HERO</div>
+          <div class="card-head">Hero & Credibility Frame</div>
+          <p class="card-body">
+            Delivers the one-line claim, verification badge (FlyRank Capstone Intern), and immediate high-level actions.
+          </p>
+          <div class="card-cta">CTA: &ldquo;Explore Projects&rdquo; & &ldquo;Schedule Call&rdquo;</div>
+        </div>
+
+        <div class="card">
+          <div class="card-num">SECTION 02 · LEAD PROOF (STRONGEST)</div>
+          <div class="card-head">ResearchScout AI Agent (MVP)</div>
+          <p class="card-body">
+            Python agent connecting live to arXiv REST API (`export.arxiv.org`), parsing vault notes, synthesizing research, and generating schema-validated flashcards with HITL approval.
+          </p>
+          <div class="card-cta">CTA: &ldquo;View Design Spec →&rdquo; & &ldquo;View Build Log →&rdquo;</div>
+        </div>
+
+        <div class="card">
+          <div class="card-num">SECTION 03 · ARCHITECTURE</div>
+          <div class="card-head">Workflows vs. Agents & MCP Explainer</div>
+          <p class="card-body">
+            Deep dive comparing deterministic pipelines against autonomous LLM reasoning loops, featuring Model Context Protocol (MCP) server declarations and tool contracts.
+          </p>
+          <div class="card-cta">CTA: &ldquo;Read Architecture Spec →&rdquo;</div>
+        </div>
+
+        <div class="card">
+          <div class="card-num">SECTION 04 · PROMPT ENGINEERING</div>
+          <div class="card-head">FL-01 Prompt Iteration Log</div>
+          <p class="card-body">
+            5-step progression from naive prompt to strict anti-fabrication structured output, proving control over model hallucination and format compliance.
+          </p>
+          <div class="card-cta">CTA: &ldquo;View Prompt Log →&rdquo;</div>
+        </div>
+
+        <div class="card">
+          <div class="card-num">SECTION 05 · INFRASTRUCTURE</div>
+          <div class="card-head">DNS & CNAME Walkthrough</div>
+          <p class="card-body">
+            7-step recursive DNS resolution guide, CNAME canonical mapping, SSL certificate provisioning, and subdomain verification for `srikant.flyrank.ai`.
+          </p>
+          <div class="card-cta">CTA: &ldquo;Read DNS Walkthrough →&rdquo;</div>
+        </div>
+
+        <div class="card">
+          <div class="card-num">SECTION 06 · FOOTER & CONNECT</div>
+          <div class="card-head">Profiles, CV & Booking</div>
+          <p class="card-body">
+            Direct access to the GitHub repository, LinkedIn profile, interactive CV modal, and Cal.com meeting booking interface.
+          </p>
+          <div class="card-cta">CTA: &ldquo;Schedule Call&rdquo; / &ldquo;Explore GitHub&rdquo;</div>
+        </div>
+      </div>
+
+      <!-- Honest Gather List -->
+      <h3 style="font-size: 16px; margin-bottom: 12px; font-weight: 600;">Honest &ldquo;Still Need to Gather&rdquo; List</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Proof Item</th>
+              <th>Status</th>
+              <th>Verification Asset / Next Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Live Python Agent MVP</strong></td>
+              <td><span class="badge badge-pass">Gathered</span></td>
+              <td>Connected to live arXiv REST API; validated JSON flashcards in `sample_data/flashcards.json`.</td>
+            </tr>
+            <tr>
+              <td><strong>Technical Design Specs</strong></td>
+              <td><span class="badge badge-pass">Gathered</span></td>
+              <td>Published `Week5_Agent_Design_Doc.html` and `FL05_Workflows_vs_Agents_MCP_Explainer.html`.</td>
+            </tr>
+            <tr>
+              <td><strong>DNS Resolution Guide</strong></td>
+              <td><span class="badge badge-pass">Gathered</span></td>
+              <td>Completed `Week5_DNS_Walkthrough.html` detailing CNAME records and SSL workflows.</td>
+            </tr>
+            <tr>
+              <td><strong>Terminal CLI Demo Recording</strong></td>
+              <td><span class="badge badge-neutral">In Progress</span></td>
+              <td>Capture 15-second clean terminal run of ResearchScout querying arXiv and executing HITL gate.</td>
+            </tr>
+            <tr>
+              <td><strong>Lighthouse 100/100 Audit</strong></td>
+              <td><span class="badge badge-neutral">Pending Deploy</span></td>
+              <td>Run full performance, accessibility, best practices, and SEO audit on live Netlify site.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Part 3: Identity Kit -->
+    <section class="section" id="identity">
+      <h2 class="section-title">Part 3: Decide Once — Visual Identity Kit</h2>
+      <p class="section-desc">
+        A professional look comes from a few disciplined decisions made once and repeated. Zero clashing fonts, zero loud gradient noise.
+      </p>
+
+      <!-- Palette Showcase -->
+      <h3 style="font-size: 16px; margin-bottom: 14px; font-weight: 600;">Strict 4-Color Palette (WCAG AAA Compliant)</h3>
+      <div class="palette-grid">
+        <div class="swatch-card">
+          <div class="swatch-color" style="background-color: #090D16;"></div>
+          <div class="swatch-meta">
+            <div class="swatch-name">Deep Canvas</div>
+            <div class="swatch-hex">#090D16</div>
+            <div class="swatch-role">Site background & structure</div>
+          </div>
+        </div>
+
+        <div class="swatch-card">
+          <div class="swatch-color" style="background-color: #131B2E;"></div>
+          <div class="swatch-meta">
+            <div class="swatch-name">Slate Surface</div>
+            <div class="swatch-hex">#131B2E</div>
+            <div class="swatch-role">Cards, containers & modals</div>
+          </div>
+        </div>
+
+        <div class="swatch-card">
+          <div class="swatch-color" style="background-color: #F1F5F9;"></div>
+          <div class="swatch-meta">
+            <div class="swatch-name">Slate Light (Text)</div>
+            <div class="swatch-hex">#F1F5F9</div>
+            <div class="swatch-role">Primary headings & body text</div>
+          </div>
+        </div>
+
+        <div class="swatch-card">
+          <div class="swatch-color" style="background-color: #14B8A6;"></div>
+          <div class="swatch-meta">
+            <div class="swatch-name">Refined Mint (Accent)</div>
+            <div class="swatch-hex">#14B8A6</div>
+            <div class="swatch-role">Links, active pills & key CTAs</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contrast Audit Matrix -->
+      <h3 style="font-size: 16px; margin-bottom: 12px; font-weight: 600;">WebAIM Contrast Audit Matrix</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Color Pairing</th>
+              <th>Foreground / Background</th>
+              <th>Contrast Ratio</th>
+              <th>WCAG Compliance</th>
+              <th>Assessment</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Main Text on Canvas</strong></td>
+              <td>`#F1F5F9` on `#090D16`</td>
+              <td><strong>15.8 : 1</strong></td>
+              <td><span class="badge badge-pass">AAA Pass</span></td>
+              <td>Exceptional readability; eliminates eye strain.</td>
+            </tr>
+            <tr>
+              <td><strong>Muted Text on Canvas</strong></td>
+              <td>`#94A3B8` on `#090D16`</td>
+              <td><strong>7.1 : 1</strong></td>
+              <td><span class="badge badge-pass">AAA Pass</span></td>
+              <td>Secondary metadata remains fully legible.</td>
+            </tr>
+            <tr>
+              <td><strong>Main Text on Card</strong></td>
+              <td>`#F1F5F9` on `#131B2E`</td>
+              <td><strong>13.6 : 1</strong></td>
+              <td><span class="badge badge-pass">AAA Pass</span></td>
+              <td>High legibility for case study descriptions.</td>
+            </tr>
+            <tr>
+              <td><strong>Mint Accent on Canvas</strong></td>
+              <td>`#14B8A6` on `#090D16`</td>
+              <td><strong>8.4 : 1</strong></td>
+              <td><span class="badge badge-pass">AAA Pass</span></td>
+              <td>Vivid interactive highlights without harshness.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Typography -->
+      <h3 style="font-size: 16px; margin-bottom: 12px; font-weight: 600;">Typographic Hierarchy</h3>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-num">HEADINGS & UI</div>
+          <div class="card-head" style="font-family: var(--font-heading);">Geist (SemiBold 600, Bold 700)</div>
+          <p class="card-body">
+            Engineered specifically for developer interfaces. Tight letter tracking (`-0.5px`), strong visual structure, and high legibility at large display sizes.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-num">BODY & CODE</div>
+          <div class="card-head">Inter (Regular 400, Medium 500)</div>
+          <p class="card-body">
+            Clean neutral grotesque with balanced x-height for long-form case studies. Paired with <strong>JetBrains Mono</strong> for unambiguous code schemas and API endpoints.
+          </p>
+        </div>
+      </div>
+
+      <!-- Two-Line Style Guide -->
+      <h3 style="font-size: 16px; margin-bottom: 14px; font-weight: 600;">Two-Line Reusable Style Guide (For AI Workspace Prompts)</h3>
+      <div class="snippet-box">
+        <span class="snippet-label">COPYABLE STYLE SNIPPET</span>
+        <strong>Typography:</strong> Geist / Inter (weights 400, 600, 700) + JetBrains Mono for code.<br>
+        <strong>Palette:</strong> #090D16 (canvas), #131B2E (card), #F1F5F9 (text), #94A3B8 (muted), #14B8A6 (accent), #1E293B (border). Spacing: 8px grid, calm frame where technical proof is the loudest element.
+      </div>
+    </section>
+
+    <!-- Part 4: Image Curation & Rejection Log -->
+    <section class="section" id="images">
+      <h2 class="section-title">Part 4: Kill Your Darlings — Image Curation & AI Rejection Log</h2>
+      <p class="section-desc">
+        AI can generate a hundred images in minutes. The real skill is deciding which one serves proof, rejecting generic &ldquo;AI slop,&rdquo; and knowing when real captures of code and terminal sessions beat anything generated.
+      </p>
+
+      <!-- Rejection Cases -->
+      <div class="rejection-card">
+        <div class="rejection-header">
+          <div class="rejection-title">1. Rejected Concept: Floating Purple 3D Neural Network with Neon Rings</div>
+          <span class="badge badge-reject">REJECTED (AI SLOP)</span>
+        </div>
+        <div class="rejection-prompt">Prompt: "Futuristic neural network glowing purple and cyan, 3d render, octane render, 8k, digital intelligence."</div>
+        <p class="rejection-critique">
+          <strong>The Judgment:</strong> Violates the anti-cliché rule (&ldquo;No Purple on Dark&rdquo;). Recruiter instantly recognizes it as generic Midjourney stock filler with zero connection to the arXiv REST API or Python tool-calling code. It obscures the headline and signals superficiality.
+        </p>
+        <div class="rejection-replacement">
+          ✓ <strong>Replacement:</strong> Clean white headline over whitespace with a crisp, high-contrast status pill badge.
+        </div>
+      </div>
+
+      <div class="rejection-card">
+        <div class="rejection-header">
+          <div class="rejection-title">2. Rejected Concept: Cybernetic Cyborg Head Dissolving into Matrix Code</div>
+          <span class="badge badge-reject">REJECTED (MISLEADING SCI-FI)</span>
+        </div>
+        <div class="rejection-prompt">Prompt: "Humanoid AI robot thinking with data streams in background, cinematic lighting, hyperrealistic."</div>
+        <p class="rejection-critique">
+          <strong>The Judgment:</strong> Perpetuates false sci-fi clichés. The capstone is about practical software engineering: Python agents, API schema validation, and structured prompt engineering—not sentient cyborgs. Signals an amateur hobbyist rather than an engineer.
+        </p>
+        <div class="rejection-replacement">
+          ✓ <strong>Replacement:</strong> A real terminal session capture showing `httpx.get("https://export.arxiv.org/api/query")` returning 200 OK.
+        </div>
+      </div>
+
+      <div class="rejection-card">
+        <div class="rejection-header">
+          <div class="rejection-title">3. Rejected Concept: Glassmorphic Iridescent Spheres with Liquid Gradients</div>
+          <span class="badge badge-reject">REJECTED (DECORATIVE NOISE)</span>
+        </div>
+        <div class="rejection-prompt">Prompt: "Abstract glassmorphism 3d pastel shapes, frosted glass sphere floating, apple style wallpaper."</div>
+        <p class="rejection-critique">
+          <strong>The Judgment:</strong> Visually noisy and distorts text contrast. It distracts the visitor's eye away from the case studies and onto meaningless decorative blobs.
+        </p>
+        <div class="rejection-replacement">
+          ✓ <strong>Replacement:</strong> Solid `#090D16` canvas with subtle `#1E293B` structural 1px grid borders.
+        </div>
+      </div>
+
+      <div class="rejection-card">
+        <div class="rejection-header">
+          <div class="rejection-title">4. Rejected Concept: Synthetic AI-Generated Corporate Suit Portrait</div>
+          <span class="badge badge-reject">REJECTED (INAUTHENTIC)</span>
+        </div>
+        <div class="rejection-prompt">Prompt: "Corporate portrait of young professional software engineer in modern office, photorealistic, 85mm."</div>
+        <p class="rejection-critique">
+          <strong>The Judgment:</strong> Synthetic airbrushed skin creates an immediate &ldquo;uncanny valley&rdquo; reaction that destroys visitor trust. In an AI engineering portfolio, authenticity and verifiable proof are paramount.
+        </p>
+        <div class="rejection-replacement">
+          ✓ <strong>Replacement:</strong> An authentic developer photograph paired with verified links to GitHub repositories.
+        </div>
+      </div>
+
+      <!-- Amateur vs Intentional Table -->
+      <h3 style="font-size: 16px; margin-top: 32px; margin-bottom: 12px; font-weight: 600;">Summary: Amateur vs. Intentional Design Choices</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Reads as Amateur (Rejected)</th>
+              <th>Reads as Intentional (Implemented)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Three or four clashing fonts, decorative typefaces.</td>
+              <td>Two disciplined fonts: <strong>Geist</strong> (headings) + <strong>Inter</strong> (body) + Mono for code.</td>
+            </tr>
+            <tr>
+              <td>Five bright colors and glowing purple gradient borders.</td>
+              <td>Tight palette: near-black, slate surface, near-white, single mint accent.</td>
+            </tr>
+            <tr>
+              <td>A generated &ldquo;AI slop&rdquo; hero image (neon cyber-head or floating orb).</td>
+              <td>A clean, authoritative claim over whitespace with real terminal code captures below.</td>
+            </tr>
+            <tr>
+              <td>Crammed elements with inconsistent margins and padding.</td>
+              <td>Generous 8px modular spacing and 64px section breathing room.</td>
+            </tr>
+            <tr>
+              <td>Design competes with the content for attention.</td>
+              <td>The design is a calm, quiet frame; the technical proof is the loudest element.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Part 5: Self-Audit & Submission Summary -->
+    <section class="section">
+      <h2 class="section-title">Part 5: Pass / Revise Audit Checklist</h2>
+      <p class="section-desc">
+        Pre-submission verification against the FlyRank Week 3 rubric.
+      </p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Evaluation Criteria</th>
+              <th>Requirement</th>
+              <th>Result</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>One-Line Claim</strong></td>
+              <td>Single, memorable sentence (under 25 words).</td>
+              <td><span class="badge badge-pass">PASS</span></td>
+              <td>18-word sharpened claim focused on engineering reliable agent systems.</td>
+            </tr>
+            <tr>
+              <td><strong>Content Map & CTAs</strong></td>
+              <td>Ordered sections, strongest case study first, laddered CTAs.</td>
+              <td><span class="badge badge-pass">PASS</span></td>
+              <td>6 ordered sections leading with ResearchScout MVP; clear CTAs.</td>
+            </tr>
+            <tr>
+              <td><strong>Gather List</strong></td>
+              <td>Honest inventory of pending assets to unblock builds.</td>
+              <td><span class="badge badge-pass">PASS</span></td>
+              <td>Cataloged completed artifacts vs pending video demo & DNS propagation.</td>
+            </tr>
+            <tr>
+              <td><strong>Identity Kit</strong></td>
+              <td>1–2 Google Fonts, 4-color palette with hex codes, SVG logo.</td>
+              <td><span class="badge badge-pass">PASS</span></td>
+              <td>Geist/Inter, `#090D16` / `#131B2E` / `#F1F5F9` / `#14B8A6`, custom SVG logo.</td>
+            </tr>
+            <tr>
+              <td><strong>Contrast Verification</strong></td>
+              <td>WCAG AA / AAA compliance check.</td>
+              <td><span class="badge badge-pass">PASS</span></td>
+              <td>Main text on canvas achieves 15.8:1 (AAA). All pairings exceed 7.0:1.</td>
+            </tr>
+            <tr>
+              <td><strong>Ruthless Image Curation</strong></td>
+              <td>Real captures for work; critical AI rejection log.</td>
+              <td><span class="badge badge-pass">PASS</span></td>
+              <td>4 detailed rejection case studies demonstrating technical judgment.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="margin-top: 24px; display: flex; gap: 12px; flex-wrap: wrap;">
+        <a href="index.html" class="btn">View Updated Portfolio Live →</a>
+        <a href="Week3_Portfolio_Identity_and_Content_Map.md" target="_blank" class="btn btn-secondary">View Markdown Source</a>
+      </div>
+    </section>
+
+  </div>
+
+  <footer>
+    <p>FlyRank AI Internship Capstone · General AI Fluency Track · Srikant · 2026</p>
+  </footer>
+
+</body>
+</html>

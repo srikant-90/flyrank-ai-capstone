@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Week 6 Deliverable · Explain It Like You Built It · Srikant</title>
+  <meta name="description" content="FlyRank AI Internship Week 6 Deliverable: Explaining modal popups, event bubbling, and stopPropagation in plain words.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-canvas: #090d16;
+      --bg-card: #131b2e;
+      --bg-card-hover: #18233c;
+      --border: #1e293b;
+      --border-focus: #334155;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --accent: #14b8a6;
+      --accent-hover: #0d9488;
+      --accent-bg: rgba(20, 184, 166, 0.12);
+      --font-heading: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --max-w: 860px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-canvas);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.65;
+      padding-bottom: 80px;
+    }
+
+    /* Topbar */
+    .topbar {
+      border-bottom: 1px solid var(--border);
+      background-color: rgba(9, 13, 22, 0.85);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .topbar-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 14px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text-main);
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .container {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .doc-header {
+      padding: 48px 0 32px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--accent);
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    h1 {
+      font-family: var(--font-heading);
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.7px;
+      line-height: 1.25;
+      margin-bottom: 16px;
+    }
+
+    .lead-text {
+      font-size: 16px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .section {
+      padding: 40px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-title {
+      font-family: var(--font-heading);
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: var(--text-main);
+    }
+
+    p { margin-bottom: 16px; color: var(--text-muted); }
+    p strong { color: var(--text-main); }
+
+    /* Code block */
+    pre {
+      background-color: #05080f;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 20px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: #e2e8f0;
+      overflow-x: auto;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    .highlight-box {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin: 24px 0;
+    }
+
+    .analogy-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin: 24px 0;
+    }
+
+    @media (max-width: 650px) {
+      .analogy-grid { grid-template-columns: 1fr; }
+    }
+
+    .analogy-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+    }
+
+    .analogy-title {
+      font-family: var(--font-heading);
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      font-family: var(--font-mono);
+      background-color: var(--accent-bg);
+      color: var(--accent);
+      border: 1px solid rgba(20, 184, 166, 0.3);
+    }
+
+    /* Interactive Demo Box */
+    .demo-frame {
+      background: rgba(0,0,0,0.3);
+      border: 1px dashed var(--border);
+      border-radius: 12px;
+      padding: 28px;
+      text-align: center;
+      margin: 24px 0;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background-color: var(--accent);
+      color: #090d16;
+      padding: 9px 18px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13.5px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+
+    .btn:hover {
+      background-color: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      margin-top: 16px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      text-align: left;
+    }
+
+    th {
+      background-color: var(--bg-card);
+      color: var(--text-main);
+      font-weight: 600;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(30, 41, 59, 0.5);
+      color: var(--text-muted);
+    }
+
+    tr:last-child td { border-bottom: none; }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a href="index.html" class="brand">
+        <svg width="22" height="22" viewBox="0 0 32 32">
+          <rect width="32" height="32" rx="8" fill="#090D16" stroke="#1E293B" stroke-width="1.5"/>
+          <path d="M10 9h12v3.5H14.5a1.5 1.5 0 0 0 0 3h3a4.5 4.5 0 0 1 0 9H10v-3.5h7.5a1.5 1.5 0 0 0 0-3h-3a4.5 4.5 0 0 1 0-9z" fill="#F1F5F9"/>
+          <circle cx="23" cy="22" r="2.5" fill="#14B8A6"/>
+        </svg>
+        <span>Srikant · Capstone Build</span>
+      </a>
+      <span class="badge">Week 6 · Explain Your Build</span>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <section class="doc-header">
+      <div class="eyebrow">Week 6 Assignment · Explain It Like You Built It</div>
+      <h1>Owning the Build: How Modal Overlays and Event Bubbling Actually Work</h1>
+      <p class="lead-text">
+        The line between &ldquo;I built this&rdquo; and &ldquo;AI built something I can't explain&rdquo; is the credibility test. Here is my plain-words breakdown of the mystery code behind our portfolio's interactive popup modals.
+      </p>
+    </section>
+
+    <!-- The Chosen Piece -->
+    <section class="section">
+      <h2 class="section-title">1. The Mystery Code in index.html</h2>
+      <p>
+        When AI generated the booking and CV modals for my portfolio, it included a line that caught my attention:
+      </p>
+
+      <pre><code>&lt;!-- Full-screen dark overlay --&gt;
+&lt;div id="booking-modal" class="modal-overlay" onclick="closeModal('booking-modal')"&gt;
+
+  &lt;!-- The popup card sitting inside --&gt;
+  &lt;div class="modal-card" onclick="event.stopPropagation()"&gt;
+    &lt;button class="modal-close" onclick="closeModal('booking-modal')"&gt;&amp;times;&lt;/button&gt;
+    &lt;h3&gt;Schedule a Technical Chat&lt;/h3&gt;
+    &lt;p&gt;Select a time to discuss AI agent design...&lt;/p&gt;
+  &lt;/div&gt;
+
+&lt;/div&gt;</code></pre>
+
+      <div class="highlight-box">
+        <strong>The Question I Asked:</strong><br>
+        Why do we need <code>onclick="event.stopPropagation()"</code> on the inner card? What is propagating, and why would clicking inside the white box close the window if that line was missing?
+      </div>
+    </section>
+
+    <!-- Plain Words Explanation -->
+    <section class="section">
+      <h2 class="section-title">2. Plain-Words Explanation (Teaching a Friend)</h2>
+      <p>
+        Imagine you have two clear plastic sheets stacked on top of each other:
+      </p>
+
+      <div class="analogy-grid">
+        <div class="analogy-card">
+          <div class="analogy-title">1. The Tinted Sheet (Overlay)</div>
+          <p style="font-size: 13.5px;">
+            A dark, semi-transparent sheet that covers the whole screen. When you click this dark space, you want the popup to disappear.
+          </p>
+        </div>
+
+        <div class="analogy-card">
+          <div class="analogy-title">2. The White Card (Dialog)</div>
+          <p style="font-size: 13.5px;">
+            A solid white card resting right in the middle containing your text, links, and booking buttons.
+          </p>
+        </div>
+      </div>
+
+      <p>
+        <strong>How Browsers Notice Clicks (Event Bubbling):</strong><br>
+        When you click something on a web page, the browser doesn't just register the click at that exact pixel. It treats the click like dropping a pebble into a pond—the ripples <strong>travel outward and upward</strong> through every parent box that wraps around that element.
+      </p>
+
+      <p>
+        Because the white card lives <em>inside</em> the dark background in our code, clicking a button inside the card causes the click ripple to bubble upward until it touches the dark background.
+      </p>
+
+      <p>
+        Without <code>event.stopPropagation()</code>, the dark background hears that a click happened and immediately triggers <code>closeModal()</code>—<strong>abruptly slamming the popup shut in the user's face while they are trying to read or type!</strong>
+      </p>
+
+      <div class="highlight-box" style="border-left-color: #10b981;">
+        <strong>What <code>event.stopPropagation()</code> does:</strong><br>
+        It tells the browser: <em>&ldquo;Handle whatever the user clicked right here inside this white box, and <strong>STOP</strong> the ripple from traveling up to the dark background.&rdquo;</em>
+      </div>
+    </section>
+
+    <!-- CSS Behind It -->
+    <section class="section">
+      <h2 class="section-title">3. How the CSS Creates the Dimmed Effect</h2>
+      <p>
+        Three key CSS rules work together on <code>.modal-overlay</code> to make this feel like a native application:
+      </p>
+
+      <pre><code>.modal-overlay {
+  position: fixed;                    /* Pins the layer to the screen regardless of scrolling */
+  top: 0; left: 0; width: 100%; height: 100%; /* Stretches across the entire viewport */
+  background: rgba(9, 13, 22, 0.85);  /* 85% opacity dark slate tint */
+  backdrop-filter: blur(8px);         /* Blurs the portfolio behind the modal */
+  z-index: 1000;                      /* Forces the modal to sit on top of all page elements */
+}</code></pre>
+    </section>
+
+    <!-- Pass/Revise Audit -->
+    <section class="section">
+      <h2 class="section-title">4. Pass / Revise Audit</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Evaluation Criteria</th>
+              <th>Status</th>
+              <th>Verification Detail</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Real piece of build</strong></td>
+              <td><span class="badge">PASS</span></td>
+              <td>Directly explains lines 358–386 and 583–618 in <code>index.html</code>.</td>
+            </tr>
+            <tr>
+              <td><strong>In own words & accurate</strong></td>
+              <td><span class="badge">PASS</span></td>
+              <td>Pebble/ripple analogy explaining event bubbling and propagation.</td>
+            </tr>
+            <tr>
+              <td><strong>Demonstrates learning</strong></td>
+              <td><span class="badge">PASS</span></td>
+              <td>Eliminates the mystery code behind popup listeners and fixed positioning.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="margin-top: 24px;">
+        <a href="index.html" class="btn">← Back to Portfolio</a>
+      </div>
+    </section>
+
+  </div>
+
+</body>
+</html>
