@@ -494,31 +494,78 @@
       color: var(--text-muted);
       font-size: 22px; cursor: pointer;
     }
+
+    /* Skip link */
+    .skip-link {
+      position: absolute;
+      top: -100%;
+      left: 1rem;
+      z-index: 999;
+      padding: 0.75rem 1.25rem;
+      background: var(--accent);
+      color: #090d16;
+      font-weight: 700;
+      font-size: 14px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: top 0.1s;
+    }
+    .skip-link:focus {
+      top: 1rem;
+      outline: 2px solid #090d16;
+      outline-offset: 2px;
+    }
+    /* Focus ring for all interactive elements */
+    a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+    input, textarea {
+      color-scheme: dark;
+    }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border: 0;
+    }
+    #portfolio-contact-form input:focus-visible,
+    #portfolio-contact-form textarea:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 1px;
+      border-color: var(--accent);
+    }
   </style>
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
 
   <header>
     <div class="nav-container">
-      <a href="index.html" class="logo">
-        <svg class="logo-icon" viewBox="0 0 32 32">
+      <a href="index.html" class="logo" aria-label="Srikant — FlyRank AI Capstone home">
+        <svg class="logo-icon" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
           <rect width="32" height="32" rx="8" fill="#090D16" stroke="#1E293B" stroke-width="1.5"/>
           <path d="M10 9h12v3.5H14.5a1.5 1.5 0 0 0 0 3h3a4.5 4.5 0 0 1 0 9H10v-3.5h7.5a1.5 1.5 0 0 0 0-3h-3a4.5 4.5 0 0 1 0-9z" fill="#F1F5F9"/>
           <circle cx="23" cy="22" r="2.5" fill="#14B8A6"/>
         </svg>
         Srikant <span class="logo-badge">FlyRank AI Capstone</span>
       </a>
-      <ul class="nav-links">
+      <nav aria-label="Primary navigation"><ul class="nav-links">
         <li><a href="#about">About</a></li>
         <li><a href="#projects">Projects</a></li>
         <li><a href="#identity-kit">Visual Identity</a></li>
         <li><a href="#docs">Docs</a></li>
         <li><button onclick="openModal('booking-modal')" class="btn btn-secondary" style="padding: 6px 14px; font-size: 13px;">Connect</button></li>
-      </ul>
+      </ul></nav>
     </div>
   </header>
 
-  <main>
+  <main id="main-content">
 
     <!-- Hero Section -->
     <section class="hero" id="about">
@@ -534,7 +581,7 @@
         </p>
         <div class="hero-cta">
           <a href="#projects" class="btn">Explore Live Agent &rarr;</a>
-          <a href="https://github.com/srikant-90/flyrank-ai-capstone" target="_blank" rel="noopener" class="btn btn-secondary">GitHub Repository</a>
+          <a href="https://github.com/srikant-90/flyrank-ai-capstone" target="_blank" rel="noopener" class="btn btn-secondary">GitHub Repository<span class="sr-only"> (opens in new tab)</span></a>
         </div>
       </div>
       <div class="hero-card">
@@ -542,7 +589,7 @@
         <div class="hero-card-stat">Autonomous Agent MVP</div>
         <p style="color: var(--text-muted); font-size: 13.5px;">Personal AI Research Scout Agent querying arXiv REST API with verified JSON flashcard export.</p>
         <div class="status-indicator">
-          <div class="status-dot"></div>
+          <div class="status-dot" aria-hidden="true"></div>
           Live Tool Integration Verified
         </div>
       </div>
@@ -750,7 +797,7 @@
             <button type="submit" id="main-submit-btn" class="btn" style="width:100%; justify-content:center;">
               <span>Send Message &rarr;</span>
             </button>
-            <div id="main-form-status" style="display:none; margin-top:12px; font-size:13px; padding:8px 12px; border-radius:6px;"></div>
+            <div id="main-form-status" role="status" aria-live="polite" aria-atomic="true" style="display:none; margin-top:12px; font-size:13px; padding:8px 12px; border-radius:6px;"></div>
           </form>
         </div>
 
@@ -772,13 +819,13 @@
             </div>
           </a>
 
-          <div onclick="openModal('booking-modal')" class="social-box" style="cursor: pointer;">
-            <div class="social-icon">📅</div>
+          <button type="button" onclick="openModal('booking-modal')" class="social-box" style="cursor: pointer; background: none; border: 1px solid var(--border); width: 100%; text-align: left;">
+            <div class="social-icon" aria-hidden="true">📅</div>
             <div>
               <div class="social-name">Schedule Call</div>
               <div class="social-desc">Cal.com Booking</div>
             </div>
-          </div>
+          </button>
         </div>
 
       </div>
@@ -791,10 +838,10 @@
   </footer>
 
   <!-- Booking Modal -->
-  <div id="booking-modal" class="modal-overlay" onclick="closeModal('booking-modal')">
+  <div id="booking-modal" class="modal-overlay" onclick="closeModal('booking-modal')" role="dialog" aria-modal="true" aria-labelledby="booking-modal-title" aria-hidden="true">
     <div class="modal-card" onclick="event.stopPropagation()">
-      <button class="modal-close" onclick="closeModal('booking-modal')">&times;</button>
-      <h3 style="margin-bottom: 10px; font-family: var(--font-heading);">Schedule a Technical Chat</h3>
+      <button class="modal-close" onclick="closeModal('booking-modal')" aria-label="Close dialog">&times;</button>
+      <h3 id="booking-modal-title" style="margin-bottom: 10px; font-family: var(--font-heading);">Schedule a Technical Chat</h3>
       <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 14px;">Select a time to discuss AI agent design, tool-calling pipelines, or capstone collaboration.</p>
       <div style="background: var(--bg-canvas); padding: 16px; border-radius: 8px; border: 1px solid var(--border); text-align: center;">
         <p style="font-weight: 600; margin-bottom: 6px;">Cal.com Integration</p>
@@ -804,10 +851,10 @@
   </div>
 
   <!-- CV Modal -->
-  <div id="cv-modal" class="modal-overlay" onclick="closeModal('cv-modal')">
+  <div id="cv-modal" class="modal-overlay" onclick="closeModal('cv-modal')" role="dialog" aria-modal="true" aria-labelledby="cv-modal-title" aria-hidden="true">
     <div class="modal-card" onclick="event.stopPropagation()">
-      <button class="modal-close" onclick="closeModal('cv-modal')">&times;</button>
-      <h3 style="margin-bottom: 10px; font-family: var(--font-heading);">Srikant · Practitioner Profile</h3>
+      <button class="modal-close" onclick="closeModal('cv-modal')" aria-label="Close dialog">&times;</button>
+      <h3 id="cv-modal-title" style="margin-bottom: 10px; font-family: var(--font-heading);">Srikant · Practitioner Profile</h3>
       <p style="color: var(--text-muted); margin-bottom: 16px; font-size: 14px;">AI Engineer & Practitioner specializing in LLM Agent Tool Use, Python, and Full-Stack Systems.</p>
       <ul style="color: var(--text-muted); font-size: 13.5px; padding-left: 20px; margin-bottom: 20px; line-height: 1.6;">
         <li>FlyRank AI Internship — General AI Fluency Track (2026)</li>
@@ -820,11 +867,34 @@
   </div>
 
   <script>
+    let _lastFocused = null;
     function openModal(id) {
-      document.getElementById(id).style.display = 'flex';
+      const modal = document.getElementById(id);
+      _lastFocused = document.activeElement;
+      modal.style.display = 'flex';
+      modal.removeAttribute('aria-hidden');
+      // Focus first focusable element inside
+      const focusable = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+      if (focusable.length) focusable[0].focus();
+      // Focus trap
+      modal._trapHandler = function(e) {
+        if (e.key === 'Escape') { closeModal(id); return; }
+        if (e.key !== 'Tab') return;
+        const els = Array.from(modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'));
+        const first = els[0], last = els[els.length - 1];
+        if (e.shiftKey ? document.activeElement === first : document.activeElement === last) {
+          e.preventDefault();
+          (e.shiftKey ? last : first).focus();
+        }
+      };
+      modal.addEventListener('keydown', modal._trapHandler);
     }
     function closeModal(id) {
-      document.getElementById(id).style.display = 'none';
+      const modal = document.getElementById(id);
+      modal.style.display = 'none';
+      modal.setAttribute('aria-hidden', 'true');
+      modal.removeEventListener('keydown', modal._trapHandler);
+      if (_lastFocused) _lastFocused.focus();
     }
 
     // Live Serverless Contact Form Submission Handler
