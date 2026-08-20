@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>FlyRank AI — Neural Node Explorer · 3D Scene</title>
+  <meta name="description" content="Interactive 3D AI neural node explorer built for FlyRank AI Week 7 capstone. Rotate, configure, and explore in real-time.">
+  <link rel="preconnect" href="https://esm.sh">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #050a14;
+      --accent: #6c8bff;
+      --accent2: #a78bfa;
+      --panel-bg: rgba(8, 12, 28, 0.88);
+      --panel-border: rgba(108, 139, 255, 0.25);
+      --text: #dce8ff;
+      --muted: #7088b0;
+      --font: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      overflow-x: hidden;
+    }
+
+    /* ── Canvas host ──────────────────────────────── */
+    #canvas-root {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+    }
+
+    #canvas-root canvas {
+      display: block;
+      width: 100% !important;
+      height: 100% !important;
+      touch-action: none;
+    }
+
+    /* ── Cursor glow (CSS, no WebGL needed) ───────── */
+    #cursor-glow {
+      position: fixed;
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(108,139,255,0.06) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 1;
+      transform: translate(-50%, -50%);
+      transition: transform 0.08s linear;
+    }
+
+    /* ── Page overlay ─────────────────────────────── */
+    #overlay {
+      position: relative;
+      z-index: 10;
+      pointer-events: none;
+      min-height: 280vh;
+    }
+
+    #hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100svh;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .label-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid rgba(108,139,255,0.3);
+      border-radius: 100px;
+      padding: 0.3rem 0.85rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .label-tag::before {
+      content: '';
+      display: block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: blink 1.8s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.2; }
+    }
+
+    #hero h1 {
+      font-size: clamp(2.2rem, 7vw, 4.5rem);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      background: linear-gradient(145deg, #ffffff 0%, #a5b4ff 45%, #c084fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1.25rem;
+    }
+
+    #hero p {
+      font-size: clamp(0.95rem, 2vw, 1.1rem);
+      color: var(--muted);
+      max-width: 440px;
+      line-height: 1.65;
+      margin-bottom: 2rem;
+    }
+
+    .hero-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+    }
+
+    .pill {
+      font-size: 0.68rem;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 100px;
+      padding: 0.3rem 0.75rem;
+    }
+
+    /* ── Scroll hint ──────────────────────────────── */
+    #scroll-hint {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--muted);
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition: opacity 0.5s ease;
+    }
+
+    #scroll-hint .arrow-down {
+      width: 1px;
+      height: 32px;
+      background: linear-gradient(to bottom, transparent, var(--accent));
+      margin: 0 auto;
+      animation: grow 1.8s ease-in-out infinite;
+    }
+
+    @keyframes grow {
+      0%, 100% { transform: scaleY(0.5); opacity: 0.4; }
+      50% { transform: scaleY(1); opacity: 1; }
+    }
+
+    /* ── Config panel ─────────────────────────────── */
+    #config-panel {
+      position: fixed;
+      top: 1.25rem;
+      right: 1.25rem;
+      z-index: 20;
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 18px;
+      padding: 1.25rem;
+      width: 230px;
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      box-shadow:
+        0 0 0 1px rgba(108,139,255,0.06),
+        0 4px 16px rgba(0,0,0,0.6),
+        0 0 48px rgba(108,139,255,0.04);
+      transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.25s ease;
+    }
+
+    #config-panel.hidden-panel {
+      transform: translateX(calc(100% + 2rem));
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.1rem;
+    }
+
+    .panel-header h3 {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .panel-close {
+      background: rgba(255,255,255,0.06);
+      border: none;
+      border-radius: 6px;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.9rem;
+      line-height: 1;
+      padding: 0.25rem 0.4rem;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .panel-close:hover { background: rgba(255,255,255,0.12); color: var(--text); }
+
+    /* Reopen button */
+    #panel-reopen {
+      position: fixed;
+      top: 1.25rem;
+      right: 1.25rem;
+      z-index: 20;
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 12px;
+      padding: 0.55rem 0.9rem;
+      cursor: pointer;
+      color: var(--accent);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      backdrop-filter: blur(24px);
+      display: none;
+      transition: background 0.2s;
+    }
+
+    #panel-reopen.show { display: block; }
+    #panel-reopen:hover { background: rgba(108,139,255,0.12); }
+
+    .control-group {
+      margin-bottom: 0.9rem;
+    }
+
+    .control-group:last-child { margin-bottom: 0; }
+
+    .ctrl-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.68rem;
+      color: var(--muted);
+      margin-bottom: 0.4rem;
+      letter-spacing: 0.04em;
+    }
+
+    .ctrl-label .val {
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+      font-size: 0.68rem;
+    }
+
+    /* Range input */
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 3px;
+      border-radius: 2px;
+      background: rgba(255,255,255,0.08);
+      outline: none;
+      cursor: pointer;
+      position: relative;
+    }
+
+    input[type="range"]::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      border-radius: 2px;
+      background: var(--accent);
+      width: var(--fill, 50%);
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: #fff;
+      border: 2px solid var(--accent);
+      cursor: pointer;
+      box-shadow: 0 0 8px rgba(108,139,255,0.7);
+      position: relative;
+      z-index: 1;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: #fff;
+      border: 2px solid var(--accent);
+      cursor: pointer;
+      box-shadow: 0 0 8px rgba(108,139,255,0.7);
+    }
+
+    /* Color picker */
+    .color-row {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    input[type="color"] {
+      -webkit-appearance: none;
+      flex: 1;
+      height: 30px;
+      border: 1px solid var(--panel-border);
+      border-radius: 8px;
+      background: none;
+      cursor: pointer;
+      padding: 2px 3px;
+    }
+
+    input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+    input[type="color"]::-webkit-color-swatch { border: none; border-radius: 5px; }
+
+    /* Presets */
+    .color-presets {
+      display: flex;
+      gap: 4px;
+    }
+
+    .color-preset {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: transform 0.15s, border-color 0.15s;
+    }
+
+    .color-preset:hover { transform: scale(1.2); }
+    .color-preset.active { border-color: white; }
+
+    /* Toggle */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .toggle-row .ctrl-label { margin-bottom: 0; }
+
+    .toggle-switch {
+      position: relative;
+      width: 34px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    .toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+
+    .toggle-track {
+      position: absolute;
+      inset: 0;
+      border-radius: 9px;
+      background: rgba(255,255,255,0.08);
+      cursor: pointer;
+      transition: background 0.22s;
+    }
+
+    .toggle-track::after {
+      content: '';
+      position: absolute;
+      left: 2px; top: 2px;
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: var(--muted);
+      transition: transform 0.22s, background 0.22s;
+    }
+
+    .toggle-switch input:checked + .toggle-track { background: var(--accent); }
+    .toggle-switch input:checked + .toggle-track::after {
+      transform: translateX(16px);
+      background: white;
+    }
+
+    /* Select */
+    select {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--panel-border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 0.72rem;
+      padding: 0.42rem 0.6rem;
+      cursor: pointer;
+      outline: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237088b0' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.6rem center;
+    }
+
+    select option { background: #0a0f1e; }
+
+    /* Divider */
+    .divider {
+      height: 1px;
+      background: rgba(255,255,255,0.06);
+      margin: 0.75rem 0;
+    }
+
+    /* ── Top-left logo ────────────────────────────── */
+    #logo-bar {
+      position: fixed;
+      top: 1.25rem;
+      left: 1.25rem;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+    }
+
+    .logo-text {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: 0.05em;
+    }
+
+    .logo-sub {
+      font-size: 0.58rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* ── Perf badge ───────────────────────────────── */
+    #perf-badge {
+      position: fixed;
+      bottom: 1.25rem;
+      right: 1.25rem;
+      z-index: 20;
+      background: rgba(0,0,0,0.55);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 8px;
+      padding: 0.3rem 0.65rem;
+      font-size: 0.6rem;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+      backdrop-filter: blur(10px);
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    #perf-badge span { display: flex; align-items: center; gap: 0.3rem; }
+
+    .perf-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: #22c55e;
+    }
+
+    /* ── Static fallback ──────────────────────────── */
+    #fallback {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg);
+      padding: 2.5rem;
+      text-align: center;
+      gap: 1.5rem;
+    }
+
+    #fallback svg { width: min(300px, 75vw); }
+
+    #fallback h2 {
+      font-size: clamp(1.4rem, 4vw, 2.2rem);
+      font-weight: 800;
+      background: linear-gradient(135deg, #fff 0%, #6c8bff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    #fallback p {
+      color: var(--muted);
+      max-width: 360px;
+      line-height: 1.65;
+      font-size: 0.9rem;
+    }
+
+    /* ── Loading ──────────────────────────────────── */
+    #loading {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      background: var(--bg);
+      transition: opacity 0.6s ease;
+    }
+
+    #loading.fade-out { opacity: 0; pointer-events: none; }
+
+    .loader-ring {
+      width: 44px;
+      height: 44px;
+      border: 2px solid rgba(108,139,255,0.15);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+    }
+
+    .loader-text {
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Interaction hint toast ───────────────────── */
+    #hint-toast {
+      position: fixed;
+      bottom: 4rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 25;
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 100px;
+      padding: 0.4rem 1rem;
+      font-size: 0.68rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      backdrop-filter: blur(16px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      white-space: nowrap;
+    }
+
+    #hint-toast.gone {
+      opacity: 0;
+      transform: translateX(-50%) translateY(8px);
+      pointer-events: none;
+    }
+
+    /* ── Mobile ───────────────────────────────────── */
+    @media (max-width: 600px) {
+      #config-panel {
+        top: auto;
+        right: 0;
+        bottom: 5rem;
+        left: 0;
+        border-radius: 18px 18px 0 0;
+        width: 100%;
+        padding: 1.5rem 1.25rem;
+      }
+
+      #config-panel.hidden-panel {
+        transform: translateY(100%);
+      }
+
+      #panel-reopen {
+        top: auto;
+        right: 1rem;
+        bottom: 1.25rem;
+      }
+
+      #perf-badge { display: none; }
+
+      #logo-bar { top: 1rem; left: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Loading -->
+<div id="loading">
+  <div class="loader-ring"></div>
+  <p class="loader-text">Initialising scene…</p>
+</div>
+
+<!-- Cursor glow -->
+<div id="cursor-glow"></div>
+
+<!-- Static fallback (prefers-reduced-motion / no WebGL) -->
+<div id="fallback">
+  <svg viewBox="0 0 360 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="fg1" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#6c8bff" stop-opacity="0.35"/>
+        <stop offset="100%" stop-color="#6c8bff" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+    <ellipse cx="180" cy="140" rx="130" ry="130" fill="url(#fg1)"/>
+    <circle cx="180" cy="140" r="90" stroke="#6c8bff" stroke-width="1" stroke-dasharray="8 5" opacity="0.35"/>
+    <circle cx="180" cy="140" r="55" stroke="#a78bfa" stroke-width="1" stroke-dasharray="5 4" opacity="0.45"/>
+    <circle cx="180" cy="140" r="26" fill="rgba(108,139,255,0.12)" stroke="#6c8bff" stroke-width="1.5"/>
+    <!-- hex shape -->
+    <polygon points="180,120 197,130 197,150 180,160 163,150 163,130" fill="rgba(108,139,255,0.2)" stroke="#6c8bff" stroke-width="1.5"/>
+    <!-- orbit nodes -->
+    <circle cx="180" cy="50"  r="7" fill="#6c8bff"/>
+    <circle cx="258" cy="95"  r="6" fill="#a78bfa"/>
+    <circle cx="258" cy="185" r="6" fill="#a78bfa"/>
+    <circle cx="180" cy="230" r="7" fill="#6c8bff"/>
+    <circle cx="102" cy="185" r="6" fill="#a78bfa"/>
+    <circle cx="102" cy="95"  r="6" fill="#a78bfa"/>
+    <!-- connection lines -->
+    <line x1="180" y1="57"  x2="180" y2="114" stroke="#6c8bff" stroke-width="1" opacity="0.28"/>
+    <line x1="252" y1="101" x2="203" y2="130" stroke="#6c8bff" stroke-width="1" opacity="0.28"/>
+    <line x1="252" y1="179" x2="203" y2="150" stroke="#6c8bff" stroke-width="1" opacity="0.28"/>
+    <line x1="180" y1="223" x2="180" y2="166" stroke="#6c8bff" stroke-width="1" opacity="0.28"/>
+    <line x1="108" y1="179" x2="157" y2="150" stroke="#6c8bff" stroke-width="1" opacity="0.28"/>
+    <line x1="108" y1="101" x2="157" y2="130" stroke="#6c8bff" stroke-width="1" opacity="0.28"/>
+    <text x="168" y="145" fill="#e0e8ff" font-size="12" font-family="system-ui" font-weight="700" letter-spacing="1">AI</text>
+  </svg>
+  <h2>FlyRank AI Neural Node</h2>
+  <p>This 3D experience requires WebGL and browser motion. Switch off reduced-motion settings or try a desktop browser for the full interactive version.</p>
+</div>
+
+<!-- 3D Canvas mount -->
+<div id="canvas-root"></div>
+
+<!-- Page overlay (scrollable) -->
+<div id="overlay">
+  <section id="hero">
+    <span class="label-tag">FlyRank AI · Week 7 · 3D Scene</span>
+    <h1>Neural Node<br>Explorer</h1>
+    <p>An interactive 3D visualization of AI signal flow. Drag to orbit, scroll to travel, click to pulse — then configure everything in the panel.</p>
+    <div class="hero-pills">
+      <span class="pill">Three.js</span>
+      <span class="pill">OrbitControls</span>
+      <span class="pill">Procedural Geometry</span>
+      <span class="pill">Real-time Config</span>
+    </div>
+  </section>
+</div>
+
+<!-- Scroll indicator -->
+<div id="scroll-hint">
+  <div class="arrow-down"></div>
+  scroll to explore
+</div>
+
+<!-- Top-left logo -->
+<div id="logo-bar">
+  <div class="logo-icon">🧠</div>
+  <div>
+    <div class="logo-text">FlyRank AI</div>
+    <div class="logo-sub">Neural Node v1.0</div>
+  </div>
+</div>
+
+<!-- Configurator panel -->
+<div id="config-panel">
+  <div class="panel-header">
+    <h3>⚙ Configurator</h3>
+    <button class="panel-close" id="btn-close-panel" title="Close">✕</button>
+  </div>
+
+  <!-- Color -->
+  <div class="control-group">
+    <div class="ctrl-label">Core Color</div>
+    <div class="color-row">
+      <input type="color" id="ctrl-color" value="#6c8bff">
+      <div class="color-presets" id="color-presets">
+        <div class="color-preset active" data-color="#6c8bff" style="background:#6c8bff" title="Cosmic Blue"></div>
+        <div class="color-preset" data-color="#a855f7" style="background:#a855f7" title="Violet"></div>
+        <div class="color-preset" data-color="#22c55e" style="background:#22c55e" title="Matrix Green"></div>
+        <div class="color-preset" data-color="#f59e0b" style="background:#f59e0b" title="Solar Gold"></div>
+        <div class="color-preset" data-color="#ef4444" style="background:#ef4444" title="Fire Red"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Metalness -->
+  <div class="control-group">
+    <div class="ctrl-label">Metalness <span class="val" id="val-metalness">0.80</span></div>
+    <input type="range" id="ctrl-metalness" min="0" max="1" step="0.01" value="0.8">
+  </div>
+
+  <!-- Roughness -->
+  <div class="control-group">
+    <div class="ctrl-label">Roughness <span class="val" id="val-roughness">0.20</span></div>
+    <input type="range" id="ctrl-roughness" min="0" max="1" step="0.01" value="0.2">
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Rotate speed -->
+  <div class="control-group">
+    <div class="ctrl-label">Auto-Rotate Speed <span class="val" id="val-speed">0.50</span></div>
+    <input type="range" id="ctrl-speed" min="0" max="3" step="0.05" value="0.5">
+  </div>
+
+  <!-- Emissive intensity -->
+  <div class="control-group">
+    <div class="ctrl-label">Glow Intensity <span class="val" id="val-glow">0.40</span></div>
+    <input type="range" id="ctrl-glow" min="0" max="1.5" step="0.05" value="0.4">
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Wireframe toggle -->
+  <div class="control-group">
+    <div class="toggle-row">
+      <div class="ctrl-label">Wireframe</div>
+      <label class="toggle-switch">
+        <input type="checkbox" id="ctrl-wireframe">
+        <span class="toggle-track"></span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Particles toggle -->
+  <div class="control-group">
+    <div class="toggle-row">
+      <div class="ctrl-label">Particle Field</div>
+      <label class="toggle-switch">
+        <input type="checkbox" id="ctrl-particles" checked>
+        <span class="toggle-track"></span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Rings toggle -->
+  <div class="control-group">
+    <div class="toggle-row">
+      <div class="ctrl-label">Orbit Rings</div>
+      <label class="toggle-switch">
+        <input type="checkbox" id="ctrl-rings" checked>
+        <span class="toggle-track"></span>
+      </label>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Environment -->
+  <div class="control-group">
+    <div class="ctrl-label">Scene Theme</div>
+    <select id="ctrl-theme">
+      <option value="blue">Cosmic Blue</option>
+      <option value="purple">Neon Purple</option>
+      <option value="green">Matrix Green</option>
+      <option value="gold">Solar Gold</option>
+      <option value="dark">Deep Space</option>
+    </select>
+  </div>
+</div>
+
+<!-- Reopen panel button -->
+<button id="panel-reopen">⚙ Configure</button>
+
+<!-- FPS / triangle counter -->
+<div id="perf-badge">
+  <span><div class="perf-dot"></div><span id="fps-display">— fps</span></span>
+  <span id="tri-display">— tris</span>
+</div>
+
+<!-- Interaction hint -->
+<div id="hint-toast">Click the node to pulse · Drag to orbit · Scroll to travel</div>
+
+<script type="module">
+// ═══════════════════════════════════════════════════════
+//  FlyRank AI — Neural Node Explorer
+//  Week 7 Task 1 · Three.js self-contained 3D scene
+// ═══════════════════════════════════════════════════════
+
+import * as THREE from 'https://esm.sh/three@0.170.0';
+import { OrbitControls } from 'https://esm.sh/three@0.170.0/examples/jsm/controls/OrbitControls.js';
+
+// ── Capability check ──────────────────────────────────
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const hasWebGL = (() => {
+  try {
+    const c = document.createElement('canvas');
+    return !!(c.getContext('webgl2') || c.getContext('webgl'));
+  } catch { return false; }
+})();
+
+const loadingEl = document.getElementById('loading');
+
+if (reducedMotion || !hasWebGL) {
+  document.getElementById('fallback').style.display = 'flex';
+  loadingEl.style.display = 'none';
+  ['overlay','config-panel','scroll-hint','perf-badge','hint-toast','cursor-glow','logo-bar','panel-reopen']
+    .forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
+  // eslint-disable-next-line no-throw-literal
+  throw 'static-fallback';
+}
+
+// ── Scene state ───────────────────────────────────────
+const state = {
+  color: '#6c8bff',
+  metalness: 0.8,
+  roughness: 0.2,
+  wireframe: false,
+  particles: true,
+  rings: true,
+  autoRotateSpeed: 0.5,
+  glowIntensity: 0.4,
+  mouseNDCX: 0,
+  mouseNDCY: 0,
+  scrollY: 0,
+  burst: { active: false, progress: 0 },
+};
+
+const THEMES = {
+  blue:   { bg: 0x050a14, fog: 0x050a14, accent: '#6c8bff',  hemi: [0x3355ff, 0x080512] },
+  purple: { bg: 0x0d0516, fog: 0x0d0516, accent: '#a855f7',  hemi: [0x6633ff, 0x050112] },
+  green:  { bg: 0x030d06, fog: 0x030d06, accent: '#22c55e',  hemi: [0x00aa44, 0x010503] },
+  gold:   { bg: 0x0d0a01, fog: 0x0d0a01, accent: '#f59e0b',  hemi: [0xff9900, 0x080500] },
+  dark:   { bg: 0x020204, fog: 0x020204, accent: '#8888cc',  hemi: [0x223366, 0x020204] },
+};
+
+// ── Renderer ──────────────────────────────────────────
+const renderer = new THREE.WebGLRenderer({
+  antialias: window.devicePixelRatio < 2,
+  alpha: false,
+  powerPreference: 'high-performance',
+});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.15;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+document.getElementById('canvas-root').appendChild(renderer.domElement);
+
+// ── Scene ─────────────────────────────────────────────
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x050a14);
+scene.fog = new THREE.FogExp2(0x050a14, 0.035);
+
+// ── Camera ────────────────────────────────────────────
+const camera = new THREE.PerspectiveCamera(52, window.innerWidth / window.innerHeight, 0.1, 300);
+camera.position.set(0, 1.2, 9);
+
+// ── Controls ──────────────────────────────────────────
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.055;
+controls.autoRotate = true;
+controls.autoRotateSpeed = state.autoRotateSpeed;
+controls.minDistance = 3.5;
+controls.maxDistance = 22;
+controls.maxPolarAngle = Math.PI * 0.88;
+controls.enablePan = false;
+
+// ── Lights ────────────────────────────────────────────
+const ambientLight = new THREE.AmbientLight(0x0d1433, 1.2);
+scene.add(ambientLight);
+
+const hemiLight = new THREE.HemisphereLight(0x3355ff, 0x080512, 0.55);
+scene.add(hemiLight);
+
+const keyLight = new THREE.DirectionalLight(0xffffff, 2.0);
+keyLight.position.set(5, 9, 6);
+keyLight.castShadow = true;
+keyLight.shadow.mapSize.set(1024, 1024);
+keyLight.shadow.camera.near = 0.5;
+keyLight.shadow.camera.far = 40;
+keyLight.shadow.camera.left = -10;
+keyLight.shadow.camera.right = 10;
+keyLight.shadow.camera.top = 10;
+keyLight.shadow.camera.bottom = -10;
+keyLight.shadow.bias = -0.0003;
+scene.add(keyLight);
+
+const fillLight = new THREE.DirectionalLight(0x445599, 0.7);
+fillLight.position.set(-6, 2, -4);
+scene.add(fillLight);
+
+const rimLight = new THREE.DirectionalLight(0x9966ff, 0.9);
+rimLight.position.set(0, -6, -6);
+scene.add(rimLight);
+
+// Mouse-reactive point light (follows cursor in 3D)
+const mouseLight = new THREE.PointLight(0x6c8bff, 2.5, 22);
+mouseLight.position.set(0, 1, 7);
+scene.add(mouseLight);
+
+// Core pulse light
+const coreLight = new THREE.PointLight(0x6c8bff, 1.2, 8);
+coreLight.position.set(0, 0, 0);
+scene.add(coreLight);
+
+// ── Core group ────────────────────────────────────────
+const coreGroup = new THREE.Group();
+scene.add(coreGroup);
+
+// 1. Central icosahedron — the "neural node"
+const icoGeo = new THREE.IcosahedronGeometry(1.25, 1);
+const icoMat = new THREE.MeshStandardMaterial({
+  color: new THREE.Color(state.color),
+  metalness: state.metalness,
+  roughness: state.roughness,
+  wireframe: state.wireframe,
+  envMapIntensity: 1.3,
+});
+const icoMesh = new THREE.Mesh(icoGeo, icoMat);
+icoMesh.castShadow = true;
+icoMesh.receiveShadow = true;
+coreGroup.add(icoMesh);
+
+// 2. Inner glow sphere
+const innerGeo = new THREE.SphereGeometry(0.82, 28, 28);
+const innerMat = new THREE.MeshStandardMaterial({
+  color: new THREE.Color(state.color),
+  emissive: new THREE.Color(state.color),
+  emissiveIntensity: state.glowIntensity,
+  metalness: 0.1,
+  roughness: 0.9,
+  transparent: true,
+  opacity: 0.55,
+  depthWrite: false,
+});
+const innerMesh = new THREE.Mesh(innerGeo, innerMat);
+coreGroup.add(innerMesh);
+
+// 3. Orbit rings
+const ringGroup = new THREE.Group();
+coreGroup.add(ringGroup);
+
+function makeRing(radius, tube, color, emissive, tiltX, tiltY, tiltZ) {
+  const geo = new THREE.TorusGeometry(radius, tube, 10, 90);
+  const mat = new THREE.MeshStandardMaterial({
+    color: new THREE.Color(color),
+    emissive: new THREE.Color(emissive),
+    emissiveIntensity: 0.65,
+    metalness: 0.95,
+    roughness: 0.05,
+  });
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.rotation.set(tiltX, tiltY, tiltZ);
+  mesh.castShadow = false;
+  return mesh;
+}
+
+const ring1 = makeRing(1.85, 0.028, '#6c8bff', '#6c8bff', Math.PI / 2,   0,            0);
+const ring2 = makeRing(2.3,  0.022, '#a78bfa', '#a78bfa', Math.PI / 4,   0,            Math.PI / 6);
+const ring3 = makeRing(2.75, 0.016, '#38bdf8', '#38bdf8', -Math.PI / 5, Math.PI / 3,  0);
+ringGroup.add(ring1, ring2, ring3);
+
+// 4. Orbiting node spheres
+const NODE_COUNT = 9;
+const nodeMeshes = [];
+const nodeSpeeds = [];
+for (let i = 0; i < NODE_COUNT; i++) {
+  const angle = (i / NODE_COUNT) * Math.PI * 2;
+  const r = 1.85;
+  const s = 0.07 + Math.random() * 0.07;
+  const geo = new THREE.SphereGeometry(s, 10, 10);
+  const mat = new THREE.MeshStandardMaterial({
+    color: 0x6c8bff,
+    emissive: 0x6c8bff,
+    emissiveIntensity: 0.9,
+    metalness: 0.5,
+    roughness: 0.3,
+  });
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.position.set(Math.cos(angle) * r, Math.sin(angle * 0.5) * 0.35, Math.sin(angle) * r);
+  mesh.userData = { angle, radius: r };
+  nodeMeshes.push(mesh);
+  nodeSpeeds.push(0.28 + Math.random() * 0.25);
+  coreGroup.add(mesh);
+}
+
+// 5. Connection lines (core → nodes)
+const lineMat = new THREE.LineBasicMaterial({
+  color: 0x6c8bff,
+  transparent: true,
+  opacity: 0.2,
+});
+const lineGroup = new THREE.Group();
+coreGroup.add(lineGroup);
+
+function buildLines() {
+  lineGroup.clear();
+  for (const node of nodeMeshes) {
+    const pts = [new THREE.Vector3(0,0,0), node.position.clone()];
+    const geo = new THREE.BufferGeometry().setFromPoints(pts);
+    lineGroup.add(new THREE.Line(geo, lineMat));
+  }
+}
+buildLines();
+
+// ── Shadow catcher ────────────────────────────────────
+const shadowPlane = new THREE.Mesh(
+  new THREE.PlaneGeometry(50, 50),
+  new THREE.ShadowMaterial({ opacity: 0.25 })
+);
+shadowPlane.rotation.x = -Math.PI / 2;
+shadowPlane.position.y = -4.5;
+shadowPlane.receiveShadow = true;
+scene.add(shadowPlane);
+
+// ── Subtle grid ───────────────────────────────────────
+const gridHelper = new THREE.GridHelper(60, 60, 0x111830, 0x0a1020);
+gridHelper.position.y = -4.5;
+gridHelper.material.transparent = true;
+gridHelper.material.opacity = 0.5;
+scene.add(gridHelper);
+
+// ── Particle field (instanced-like via Points) ────────
+const PARTICLE_COUNT = 900;
+const pPos = new Float32Array(PARTICLE_COUNT * 3);
+const pVel = new Float32Array(PARTICLE_COUNT);
+for (let i = 0; i < PARTICLE_COUNT; i++) {
+  const r     = 6 + Math.random() * 28;
+  const theta = Math.random() * Math.PI * 2;
+  const phi   = Math.acos(2 * Math.random() - 1);
+  pPos[i*3]   = r * Math.sin(phi) * Math.cos(theta);
+  pPos[i*3+1] = r * Math.sin(phi) * Math.sin(theta);
+  pPos[i*3+2] = r * Math.cos(phi);
+  pVel[i]     = 0.18 + Math.random() * 0.7;
+}
+const particleGeo = new THREE.BufferGeometry();
+particleGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+const particleMat = new THREE.PointsMaterial({
+  color: new THREE.Color(state.color),
+  size: 0.07,
+  transparent: true,
+  opacity: 0.65,
+  sizeAttenuation: true,
+  blending: THREE.AdditiveBlending,
+  depthWrite: false,
+});
+const particleMesh = new THREE.Points(particleGeo, particleMat);
+scene.add(particleMesh);
+
+// ── Star field ────────────────────────────────────────
+const STAR_COUNT = 2500;
+const sPos = new Float32Array(STAR_COUNT * 3);
+for (let i = 0; i < STAR_COUNT; i++) {
+  const r     = 55 + Math.random() * 120;
+  const theta = Math.random() * Math.PI * 2;
+  const phi   = Math.acos(2 * Math.random() - 1);
+  sPos[i*3]   = r * Math.sin(phi) * Math.cos(theta);
+  sPos[i*3+1] = r * Math.sin(phi) * Math.sin(theta);
+  sPos[i*3+2] = r * Math.cos(phi);
+}
+const starGeo = new THREE.BufferGeometry();
+starGeo.setAttribute('position', new THREE.BufferAttribute(sPos, 3));
+const starMesh = new THREE.Points(starGeo, new THREE.PointsMaterial({
+  color: 0xffffff,
+  size: 0.055,
+  transparent: true,
+  opacity: 0.55,
+  sizeAttenuation: true,
+}));
+scene.add(starMesh);
+
+// ── Performance tracking ──────────────────────────────
+let fpsFrames = 0, fpsTime = 0, lastTime = 0;
+const fpsBadge  = document.getElementById('fps-display');
+const triBadge  = document.getElementById('tri-display');
+
+// ── Cursor glow element ───────────────────────────────
+const cursorGlow = document.getElementById('cursor-glow');
+
+// ── Pointer ───────────────────────────────────────────
+const pointer = new THREE.Vector2();
+const raycaster = new THREE.Raycaster();
+
+window.addEventListener('pointermove', (e) => {
+  state.mouseNDCX = (e.clientX / window.innerWidth) * 2 - 1;
+  state.mouseNDCY = -(e.clientY / window.innerHeight) * 2 + 1;
+  pointer.set(state.mouseNDCX, state.mouseNDCY);
+  cursorGlow.style.transform = `translate(${e.clientX - 200}px, ${e.clientY - 200}px)`;
+}, { passive: true });
+
+// Click → burst on core
+renderer.domElement.addEventListener('click', (e) => {
+  pointer.set(
+    (e.clientX / window.innerWidth) * 2 - 1,
+    -(e.clientY / window.innerHeight) * 2 + 1
+  );
+  raycaster.setFromCamera(pointer, camera);
+  const hits = raycaster.intersectObject(icoMesh);
+  if (hits.length > 0 || true) { // burst on any canvas click
+    state.burst.active = true;
+    state.burst.progress = 0;
+  }
+});
+
+// ── Scroll ────────────────────────────────────────────
+const scrollHint = document.getElementById('scroll-hint');
+window.addEventListener('scroll', () => {
+  state.scrollY = window.scrollY;
+  if (window.scrollY > 80) scrollHint.style.opacity = '0';
+}, { passive: true });
+
+// ── Resize ────────────────────────────────────────────
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+// ── Helper: update range fill ─────────────────────────
+function setRangeFill(el) {
+  const pct = ((el.value - el.min) / (el.max - el.min)) * 100;
+  el.style.setProperty('--fill', pct + '%');
+  // use ::before pseudo approach with a wrapper or background hack
+  el.style.background = `linear-gradient(to right, var(--accent) ${pct}%, rgba(255,255,255,0.08) ${pct}%)`;
+}
+
+// ── Animation loop ────────────────────────────────────
+function animate(now) {
+  requestAnimationFrame(animate);
+
+  const delta = Math.min((now - lastTime) / 1000, 0.1);
+  lastTime = now;
+  const t = now * 0.001;
+
+  // FPS
+  fpsFrames++;
+  fpsTime += delta;
+  if (fpsTime >= 1) {
+    fpsBadge.textContent = Math.round(fpsFrames / fpsTime) + ' fps';
+    triBadge.textContent = (renderer.info.render.triangles / 1000).toFixed(1) + 'k tris';
+    fpsFrames = 0;
+    fpsTime = 0;
+  }
+
+  // ── Mouse light follows pointer in world space
+  const targetLX = state.mouseNDCX * 9;
+  const targetLY = state.mouseNDCY * 6;
+  mouseLight.position.x += (targetLX - mouseLight.position.x) * 0.06;
+  mouseLight.position.y += (targetLY - mouseLight.position.y) * 0.06;
+
+  // ── Scroll camera drift
+  const camTargetY = 1.2 + state.scrollY * 0.005;
+  camera.position.y += (camTargetY - camera.position.y) * 0.04;
+
+  // ── Core float
+  coreGroup.position.y = Math.sin(t * 0.65) * 0.18;
+
+  // ── Ring rotation
+  ring1.rotation.z  = t * 0.32;
+  ring2.rotation.y  = t * 0.21;
+  ring3.rotation.x += 0.0006;
+  ring3.rotation.z  = t * 0.12;
+
+  // ── Orbiting nodes
+  for (let i = 0; i < nodeMeshes.length; i++) {
+    const node = nodeMeshes[i];
+    const a = node.userData.angle + t * nodeSpeeds[i];
+    const r = node.userData.radius;
+    node.position.set(
+      Math.cos(a) * r,
+      Math.sin(a * 2 + i * 0.8) * 0.45,
+      Math.sin(a) * r
+    );
+  }
+  // Rebuild lines to follow nodes
+  const lineArr = lineGroup.children;
+  for (let i = 0; i < lineArr.length; i++) {
+    const posAttr = lineArr[i].geometry.attributes.position;
+    posAttr.setXYZ(1, nodeMeshes[i].position.x, nodeMeshes[i].position.y, nodeMeshes[i].position.z);
+    posAttr.needsUpdate = true;
+  }
+
+  // ── Particle drift
+  if (state.particles) {
+    const pos = particleGeo.attributes.position.array;
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      pos[i*3+1] += pVel[i] * delta;
+      if (pos[i*3+1] > 32) pos[i*3+1] = -32;
+    }
+    particleGeo.attributes.position.needsUpdate = true;
+    particleMesh.rotation.y = t * 0.025;
+    particleMesh.visible = true;
+  } else {
+    particleMesh.visible = false;
+  }
+
+  // ── Stars drift
+  starMesh.rotation.y = t * 0.004;
+  starMesh.rotation.x = t * 0.001;
+
+  // ── Inner glow pulse
+  innerMat.emissiveIntensity = state.glowIntensity + Math.sin(t * 1.8) * 0.12;
+  coreLight.intensity = 0.9 + Math.sin(t * 1.8) * 0.4;
+
+  // ── Click burst
+  if (state.burst.active) {
+    state.burst.progress += delta * 2.2;
+    const p = state.burst.progress;
+    const envelope = Math.sin(p * Math.PI);
+    const s = 1 + envelope * 0.2;
+    coreGroup.scale.setScalar(s);
+    mouseLight.intensity = 2.5 + envelope * 7;
+    coreLight.intensity  = 0.9 + envelope * 5;
+    innerMat.emissiveIntensity = state.glowIntensity + envelope * 1.2;
+    if (p >= 1) {
+      state.burst.active = false;
+      state.burst.progress = 0;
+      coreGroup.scale.setScalar(1);
+      mouseLight.intensity = 2.5;
+    }
+  }
+
+  controls.autoRotateSpeed = state.autoRotateSpeed;
+  controls.update();
+  renderer.render(scene, camera);
+}
+
+// ── Configurator wiring ───────────────────────────────
+
+// -- Color picker
+const colorInput = document.getElementById('ctrl-color');
+
+function applyColor(hex) {
+  const col = new THREE.Color(hex);
+  icoMat.color.set(col);
+  innerMat.color.set(col);
+  innerMat.emissive.set(col);
+  mouseLight.color.set(col);
+  coreLight.color.set(col);
+  particleMat.color.set(col);
+  ring1.material.color.set(col);
+  ring1.material.emissive.set(col);
+  lineMat.color.set(col);
+  // update CSS cursor glow
+  const r = parseInt(hex.slice(1,3),16);
+  const g = parseInt(hex.slice(3,5),16);
+  const b = parseInt(hex.slice(5,7),16);
+  cursorGlow.style.background = `radial-gradient(circle, rgba(${r},${g},${b},0.07) 0%, transparent 70%)`;
+  // sync presets
+  document.querySelectorAll('.color-preset').forEach(p => {
+    p.classList.toggle('active', p.dataset.color === hex);
+  });
+}
+
+colorInput.addEventListener('input', (e) => { applyColor(e.target.value); });
+
+document.getElementById('color-presets').addEventListener('click', (e) => {
+  const btn = e.target.closest('.color-preset');
+  if (!btn) return;
+  const hex = btn.dataset.color;
+  colorInput.value = hex;
+  applyColor(hex);
+});
+
+// -- Metalness
+const metalnessInput = document.getElementById('ctrl-metalness');
+metalnessInput.addEventListener('input', (e) => {
+  state.metalness = +e.target.value;
+  icoMat.metalness = state.metalness;
+  document.getElementById('val-metalness').textContent = state.metalness.toFixed(2);
+  setRangeFill(e.target);
+});
+setRangeFill(metalnessInput);
+
+// -- Roughness
+const roughnessInput = document.getElementById('ctrl-roughness');
+roughnessInput.addEventListener('input', (e) => {
+  state.roughness = +e.target.value;
+  icoMat.roughness = state.roughness;
+  document.getElementById('val-roughness').textContent = state.roughness.toFixed(2);
+  setRangeFill(e.target);
+});
+setRangeFill(roughnessInput);
+
+// -- Speed
+const speedInput = document.getElementById('ctrl-speed');
+speedInput.addEventListener('input', (e) => {
+  state.autoRotateSpeed = +e.target.value;
+  document.getElementById('val-speed').textContent = state.autoRotateSpeed.toFixed(2);
+  setRangeFill(e.target);
+});
+setRangeFill(speedInput);
+
+// -- Glow
+const glowInput = document.getElementById('ctrl-glow');
+glowInput.addEventListener('input', (e) => {
+  state.glowIntensity = +e.target.value;
+  document.getElementById('val-glow').textContent = state.glowIntensity.toFixed(2);
+  setRangeFill(e.target);
+});
+setRangeFill(glowInput);
+
+// -- Wireframe
+document.getElementById('ctrl-wireframe').addEventListener('change', (e) => {
+  icoMat.wireframe = e.target.checked;
+});
+
+// -- Particles
+document.getElementById('ctrl-particles').addEventListener('change', (e) => {
+  state.particles = e.target.checked;
+});
+
+// -- Rings
+document.getElementById('ctrl-rings').addEventListener('change', (e) => {
+  ringGroup.visible = e.target.checked;
+});
+
+// -- Theme
+document.getElementById('ctrl-theme').addEventListener('change', (e) => {
+  const theme = THEMES[e.target.value];
+  if (!theme) return;
+  scene.background.set(theme.bg);
+  scene.fog.color.set(theme.fog);
+  hemiLight.color.set(theme.hemi[0]);
+  hemiLight.groundColor.set(theme.hemi[1]);
+  colorInput.value = theme.accent;
+  applyColor(theme.accent);
+});
+
+// -- Panel open/close
+const panel = document.getElementById('config-panel');
+const reopenBtn = document.getElementById('panel-reopen');
+
+document.getElementById('btn-close-panel').addEventListener('click', () => {
+  panel.classList.add('hidden-panel');
+  reopenBtn.classList.add('show');
+});
+
+reopenBtn.addEventListener('click', () => {
+  panel.classList.remove('hidden-panel');
+  reopenBtn.classList.remove('show');
+});
+
+// ── Hint toast auto-dismiss ───────────────────────────
+const hintEl = document.getElementById('hint-toast');
+setTimeout(() => hintEl.classList.add('gone'), 4500);
+
+// ── Start render loop + reveal scene ─────────────────
+// Two rAF frames ensure renderer.info is populated before we start
+requestAnimationFrame(() => {
+  requestAnimationFrame(() => {
+    loadingEl.classList.add('fade-out');
+    setTimeout(() => loadingEl.remove(), 700);
+    animate(performance.now());
+  });
+});
+</script>
+</body>
+</html>
