@@ -4,8 +4,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Srikant · AI Intern & Practitioner | FlyRank AI Capstone Portfolio. Engineering reliable AI agents, live tool-calling pipelines, and deterministic workflows.">
+  <meta name="author" content="Srikant">
   <title>Srikant | AI Engineer & Capstone Practitioner</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="canonical" href="https://srikant-90.github.io/flyrank-ai-capstone/">
+
+  <!-- Open Graph / Social Preview -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="FlyRank AI Capstone Portfolio">
+  <meta property="og:title" content="Srikant | AI Engineer & Capstone Practitioner">
+  <meta property="og:description" content="Engineering reliable AI agents, live tool-calling pipelines, and deterministic workflows.">
+  <meta property="og:url" content="https://srikant-90.github.io/flyrank-ai-capstone/">
+  <meta property="og:image" content="https://srikant-90.github.io/flyrank-ai-capstone/favicon.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Srikant | AI Engineer & Capstone Practitioner">
+  <meta name="twitter:description" content="Engineering reliable AI agents, live tool-calling pipelines, and deterministic workflows.">
+  <meta name="twitter:image" content="https://srikant-90.github.io/flyrank-ai-capstone/favicon.svg">
   
   <!-- Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -897,20 +913,56 @@
       if (_lastFocused) _lastFocused.focus();
     }
 
-    // Live Serverless Contact Form Submission Handler
+    // Live Serverless Contact Form Submission Handler (Hardened for Edge Cases)
     const mainForm = document.getElementById('portfolio-contact-form');
     const mainBtn = document.getElementById('main-submit-btn');
     const mainStatus = document.getElementById('main-form-status');
+    let isSubmitting = false;
 
     if (mainForm) {
       mainForm.addEventListener('submit', async (e) => {
         e.preventDefault();
+
+        // Edge Case 1: Fast double submit prevention
+        if (isSubmitting) return;
+
+        // Edge Case 2: Validation of inputs (empty strings, whitespace-only, invalid format)
+        const nameVal = document.getElementById('contact-name')?.value.trim() || '';
+        const emailVal = document.getElementById('contact-email')?.value.trim() || '';
+        const msgVal = document.getElementById('contact-msg')?.value.trim() || '';
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (nameVal.length < 2) {
+          showFormError('Please enter your full name (at least 2 characters).');
+          document.getElementById('contact-name')?.focus();
+          return;
+        }
+
+        if (!emailRegex.test(emailVal)) {
+          showFormError('Please enter a valid work email address (e.g., alex@company.com).');
+          document.getElementById('contact-email')?.focus();
+          return;
+        }
+
+        if (msgVal.length < 10) {
+          showFormError('Please provide a message with at least 10 characters.');
+          document.getElementById('contact-msg')?.focus();
+          return;
+        }
+
+        isSubmitting = true;
         mainBtn.disabled = true;
         mainBtn.innerHTML = '<span>Sending Message...</span>';
         mainStatus.style.display = 'none';
 
         try {
           const formData = new FormData(mainForm);
+          // Set sanitized trimmed values
+          formData.set('name', nameVal);
+          formData.set('email', emailVal);
+          formData.set('message', msgVal);
+
           await fetch('/', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -918,7 +970,7 @@
           });
 
           mainBtn.innerHTML = '<span>✓ Message Sent!</span>';
-          mainBtn.style.backgroundColor = 'var(--success)';
+          mainBtn.style.backgroundColor = 'var(--accent-hover)';
           mainStatus.textContent = 'Thanks! Your message reached my inbox. I will get back to you within 24 hours.';
           mainStatus.style.backgroundColor = 'rgba(16, 185, 129, 0.15)';
           mainStatus.style.color = '#10b981';
@@ -926,16 +978,23 @@
           mainStatus.style.display = 'block';
           mainForm.reset();
         } catch (err) {
-          mainBtn.disabled = false;
-          mainBtn.innerHTML = '<span>Retry Sending &rarr;</span>';
-          mainBtn.style.backgroundColor = '#f43f5e';
-          mainStatus.textContent = 'Unable to send message right now. Please email directly or connect on LinkedIn.';
-          mainStatus.style.backgroundColor = 'rgba(244, 63, 94, 0.15)';
-          mainStatus.style.color = '#f43f5e';
-          mainStatus.style.border = '1px solid rgba(244, 63, 94, 0.3)';
-          mainStatus.style.display = 'block';
+          showFormError('Unable to send message right now. Please check network connection or connect on LinkedIn.');
+        } finally {
+          setTimeout(() => {
+            isSubmitting = false;
+            mainBtn.disabled = false;
+          }, 1200);
         }
       });
+    }
+
+    function showFormError(message) {
+      if (!mainStatus) return;
+      mainStatus.textContent = message;
+      mainStatus.style.backgroundColor = 'rgba(244, 63, 94, 0.15)';
+      mainStatus.style.color = '#f43f5e';
+      mainStatus.style.border = '1px solid rgba(244, 63, 94, 0.3)';
+      mainStatus.style.display = 'block';
     }
   </script>
 </body>

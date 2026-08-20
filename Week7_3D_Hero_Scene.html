@@ -3,8 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>FlyRank AI — Neural Node Explorer · 3D Scene</title>
   <meta name="description" content="Interactive 3D AI neural node explorer built for FlyRank AI Week 7 capstone. Rotate, configure, and explore in real-time.">
+  <meta name="author" content="Srikant">
+  <link rel="canonical" href="https://srikant-90.github.io/flyrank-ai-capstone/Week7_3D_Hero_Scene.html">
+
+  <!-- Open Graph / Social Preview -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="FlyRank AI 3D Neural Node Explorer">
+  <meta property="og:title" content="FlyRank AI — Neural Node Explorer · 3D Scene">
+  <meta property="og:description" content="Interactive 3D AI neural node explorer built for FlyRank AI Week 7 capstone. Rotate, configure, and explore in real-time.">
+  <meta property="og:url" content="https://srikant-90.github.io/flyrank-ai-capstone/Week7_3D_Hero_Scene.html">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="FlyRank AI — Neural Node Explorer · 3D Scene">
+  <meta name="twitter:description" content="Interactive 3D AI neural node explorer built for FlyRank AI Week 7 capstone. Rotate, configure, and explore in real-time.">
+
   <link rel="preconnect" href="https://esm.sh">
 
   <style>
@@ -203,7 +217,7 @@
       margin-bottom: 1.1rem;
     }
 
-    .panel-header h3 {
+    .panel-header h3, .panel-title {
       font-size: 0.72rem;
       font-weight: 600;
       letter-spacing: 0.14em;
@@ -550,6 +564,45 @@
 
     @keyframes spin { to { transform: rotate(360deg); } }
 
+    /* ── Accessibility utilities ─────────────────── */
+    .sr-only {
+      position: absolute;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border: 0;
+    }
+    /* Keyboard focus rings */
+    button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+    input[type="range"]:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 4px;
+    }
+    /* Pause button */
+    #btn-pause-anim {
+      position: fixed;
+      bottom: 1.25rem;
+      left: 1.25rem;
+      z-index: 20;
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 10px;
+      padding: 0.45rem 0.85rem;
+      color: var(--muted);
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      backdrop-filter: blur(16px);
+      transition: background 0.2s, color 0.2s;
+    }
+    #btn-pause-anim:hover, #btn-pause-anim:focus-visible { background: rgba(108,139,255,0.12); color: var(--text); }
+    @media (max-width: 600px) { #btn-pause-anim { bottom: 5.5rem; } }
+
     /* ── Interaction hint toast ───────────────────── */
     #hint-toast {
       position: fixed;
@@ -650,7 +703,7 @@
 </div>
 
 <!-- 3D Canvas mount -->
-<div id="canvas-root"></div>
+<div id="canvas-root" role="img" aria-label="Interactive 3D neural node scene. Use the configurator panel on the right to adjust colours, metalness, and animation."></div>
 
 <!-- Page overlay (scrollable) -->
 <div id="overlay">
@@ -668,13 +721,13 @@
 </div>
 
 <!-- Scroll indicator -->
-<div id="scroll-hint">
+<div id="scroll-hint" aria-hidden="true">
   <div class="arrow-down"></div>
   scroll to explore
 </div>
 
 <!-- Top-left logo -->
-<div id="logo-bar">
+<div id="logo-bar" aria-hidden="true">
   <div class="logo-icon">🧠</div>
   <div>
     <div class="logo-text">FlyRank AI</div>
@@ -683,23 +736,23 @@
 </div>
 
 <!-- Configurator panel -->
-<div id="config-panel">
+<div id="config-panel" role="region" aria-label="3D Scene Configurator">
   <div class="panel-header">
-    <h3>⚙ Configurator</h3>
-    <button class="panel-close" id="btn-close-panel" title="Close">✕</button>
+    <h2 class="panel-title">⚙ Configurator</h2>
+    <button class="panel-close" id="btn-close-panel" aria-label="Close configurator panel">✕</button>
   </div>
 
   <!-- Color -->
   <div class="control-group">
-    <div class="ctrl-label">Core Color</div>
+    <label for="ctrl-color" class="ctrl-label">Core Color</label>
     <div class="color-row">
       <input type="color" id="ctrl-color" value="#6c8bff">
-      <div class="color-presets" id="color-presets">
-        <div class="color-preset active" data-color="#6c8bff" style="background:#6c8bff" title="Cosmic Blue"></div>
-        <div class="color-preset" data-color="#a855f7" style="background:#a855f7" title="Violet"></div>
-        <div class="color-preset" data-color="#22c55e" style="background:#22c55e" title="Matrix Green"></div>
-        <div class="color-preset" data-color="#f59e0b" style="background:#f59e0b" title="Solar Gold"></div>
-        <div class="color-preset" data-color="#ef4444" style="background:#ef4444" title="Fire Red"></div>
+      <div class="color-presets" id="color-presets" role="group" aria-label="Color presets">
+        <button type="button" class="color-preset active" data-color="#6c8bff" style="background:#6c8bff" aria-label="Cosmic Blue" aria-pressed="true"></button>
+        <button type="button" class="color-preset" data-color="#a855f7" style="background:#a855f7" aria-label="Violet" aria-pressed="false"></button>
+        <button type="button" class="color-preset" data-color="#22c55e" style="background:#22c55e" aria-label="Matrix Green" aria-pressed="false"></button>
+        <button type="button" class="color-preset" data-color="#f59e0b" style="background:#f59e0b" aria-label="Solar Gold" aria-pressed="false"></button>
+        <button type="button" class="color-preset" data-color="#ef4444" style="background:#ef4444" aria-label="Fire Red" aria-pressed="false"></button>
       </div>
     </div>
   </div>
@@ -708,28 +761,28 @@
 
   <!-- Metalness -->
   <div class="control-group">
-    <div class="ctrl-label">Metalness <span class="val" id="val-metalness">0.80</span></div>
-    <input type="range" id="ctrl-metalness" min="0" max="1" step="0.01" value="0.8">
+    <label for="ctrl-metalness" class="ctrl-label">Metalness <span class="val" id="val-metalness" aria-live="polite">0.80</span></label>
+    <input type="range" id="ctrl-metalness" min="0" max="1" step="0.01" value="0.8" aria-describedby="val-metalness">
   </div>
 
   <!-- Roughness -->
   <div class="control-group">
-    <div class="ctrl-label">Roughness <span class="val" id="val-roughness">0.20</span></div>
-    <input type="range" id="ctrl-roughness" min="0" max="1" step="0.01" value="0.2">
+    <label for="ctrl-roughness" class="ctrl-label">Roughness <span class="val" id="val-roughness" aria-live="polite">0.20</span></label>
+    <input type="range" id="ctrl-roughness" min="0" max="1" step="0.01" value="0.2" aria-describedby="val-roughness">
   </div>
 
   <div class="divider"></div>
 
   <!-- Rotate speed -->
   <div class="control-group">
-    <div class="ctrl-label">Auto-Rotate Speed <span class="val" id="val-speed">0.50</span></div>
-    <input type="range" id="ctrl-speed" min="0" max="3" step="0.05" value="0.5">
+    <label for="ctrl-speed" class="ctrl-label">Auto-Rotate Speed <span class="val" id="val-speed" aria-live="polite">0.50</span></label>
+    <input type="range" id="ctrl-speed" min="0" max="3" step="0.05" value="0.5" aria-describedby="val-speed">
   </div>
 
   <!-- Emissive intensity -->
   <div class="control-group">
-    <div class="ctrl-label">Glow Intensity <span class="val" id="val-glow">0.40</span></div>
-    <input type="range" id="ctrl-glow" min="0" max="1.5" step="0.05" value="0.4">
+    <label for="ctrl-glow" class="ctrl-label">Glow Intensity <span class="val" id="val-glow" aria-live="polite">0.40</span></label>
+    <input type="range" id="ctrl-glow" min="0" max="1.5" step="0.05" value="0.4" aria-describedby="val-glow">
   </div>
 
   <div class="divider"></div>
@@ -737,9 +790,9 @@
   <!-- Wireframe toggle -->
   <div class="control-group">
     <div class="toggle-row">
-      <div class="ctrl-label">Wireframe</div>
-      <label class="toggle-switch">
-        <input type="checkbox" id="ctrl-wireframe">
+      <label for="ctrl-wireframe" class="ctrl-label">Wireframe</label>
+      <label class="toggle-switch" aria-hidden="true">
+        <input type="checkbox" id="ctrl-wireframe" aria-label="Toggle wireframe mode">
         <span class="toggle-track"></span>
       </label>
     </div>
@@ -748,9 +801,9 @@
   <!-- Particles toggle -->
   <div class="control-group">
     <div class="toggle-row">
-      <div class="ctrl-label">Particle Field</div>
-      <label class="toggle-switch">
-        <input type="checkbox" id="ctrl-particles" checked>
+      <label for="ctrl-particles" class="ctrl-label">Particle Field</label>
+      <label class="toggle-switch" aria-hidden="true">
+        <input type="checkbox" id="ctrl-particles" checked aria-label="Toggle particle field">
         <span class="toggle-track"></span>
       </label>
     </div>
@@ -759,9 +812,9 @@
   <!-- Rings toggle -->
   <div class="control-group">
     <div class="toggle-row">
-      <div class="ctrl-label">Orbit Rings</div>
-      <label class="toggle-switch">
-        <input type="checkbox" id="ctrl-rings" checked>
+      <label for="ctrl-rings" class="ctrl-label">Orbit Rings</label>
+      <label class="toggle-switch" aria-hidden="true">
+        <input type="checkbox" id="ctrl-rings" checked aria-label="Toggle orbit rings">
         <span class="toggle-track"></span>
       </label>
     </div>
@@ -771,7 +824,7 @@
 
   <!-- Environment -->
   <div class="control-group">
-    <div class="ctrl-label">Scene Theme</div>
+    <label for="ctrl-theme" class="ctrl-label">Scene Theme</label>
     <select id="ctrl-theme">
       <option value="blue">Cosmic Blue</option>
       <option value="purple">Neon Purple</option>
@@ -786,13 +839,19 @@
 <button id="panel-reopen">⚙ Configure</button>
 
 <!-- FPS / triangle counter -->
-<div id="perf-badge">
+<div id="perf-badge" aria-hidden="true">
   <span><div class="perf-dot"></div><span id="fps-display">— fps</span></span>
   <span id="tri-display">— tris</span>
 </div>
 
 <!-- Interaction hint -->
-<div id="hint-toast">Click the node to pulse · Drag to orbit · Scroll to travel</div>
+<div id="hint-toast" role="status" aria-live="polite">Click the node to pulse · Drag to orbit · Scroll to travel</div>
+
+<!-- Pause/resume animation button (WCAG 2.2.2) -->
+<button id="btn-pause-anim" type="button" aria-pressed="false" aria-label="Pause animation">⏸ Pause</button>
+
+<!-- Scene status announcer (aria-live for screen readers) -->
+<div id="scene-status" aria-live="polite" aria-atomic="true" class="sr-only"></div>
 
 <script type="module">
 // ═══════════════════════════════════════════════════════
@@ -1362,6 +1421,67 @@ reopenBtn.addEventListener('click', () => {
 const hintEl = document.getElementById('hint-toast');
 setTimeout(() => hintEl.classList.add('gone'), 4500);
 
+// ── Scene status announcer ────────────────────────────
+const sceneStatus = document.getElementById('scene-status');
+function announceStatus(msg) {
+  if (!sceneStatus) return;
+  sceneStatus.textContent = '';
+  requestAnimationFrame(() => { sceneStatus.textContent = msg; });
+}
+
+// ── Pause / Resume button (WCAG 2.2.2) ───────────────
+let animPaused = false;
+const pauseBtn = document.getElementById('btn-pause-anim');
+if (pauseBtn) {
+  pauseBtn.addEventListener('click', () => {
+    animPaused = !animPaused;
+    controls.autoRotate = !animPaused;
+    pauseBtn.setAttribute('aria-pressed', String(animPaused));
+    pauseBtn.setAttribute('aria-label', animPaused ? 'Resume animation' : 'Pause animation');
+    pauseBtn.textContent = animPaused ? '▶ Resume' : '⏸ Pause';
+    announceStatus(animPaused ? 'Animation paused.' : 'Animation resumed.');
+  });
+}
+
+// ── Color preset buttons aria-pressed sync ────────────
+document.getElementById('color-presets').addEventListener('click', (e) => {
+  const btn = e.target.closest('.color-preset');
+  if (!btn) return;
+  const hex = btn.dataset.color;
+  colorInput.value = hex;
+  applyColor(hex);
+  document.querySelectorAll('.color-preset').forEach(p => p.setAttribute('aria-pressed', 'false'));
+  btn.setAttribute('aria-pressed', 'true');
+});
+
+// ── Keyboard shortcuts (C, Escape, Space) ─────────────
+window.addEventListener('keydown', (e) => {
+  if (['INPUT', 'SELECT', 'TEXTAREA'].includes(e.target.tagName)) return;
+  if (e.key === 'c' || e.key === 'C') {
+    const isHidden = panel.classList.contains('hidden-panel');
+    if (isHidden) {
+      panel.classList.remove('hidden-panel');
+      reopenBtn.classList.remove('show');
+      announceStatus('Configurator panel opened. Press C to close.');
+    } else {
+      panel.classList.add('hidden-panel');
+      reopenBtn.classList.add('show');
+      announceStatus('Configurator panel closed. Press C to open.');
+    }
+  }
+  if (e.key === 'Escape') {
+    if (!panel.classList.contains('hidden-panel')) {
+      panel.classList.add('hidden-panel');
+      reopenBtn.classList.add('show');
+      announceStatus('Configurator panel closed.');
+    }
+  }
+  if (e.key === ' ' && e.target === document.body) {
+    e.preventDefault();
+    if (pauseBtn) pauseBtn.click();
+  }
+});
+
 // ── Start render loop + reveal scene ─────────────────
 // Two rAF frames ensure renderer.info is populated before we start
 requestAnimationFrame(() => {
@@ -1369,6 +1489,7 @@ requestAnimationFrame(() => {
     loadingEl.classList.add('fade-out');
     setTimeout(() => loadingEl.remove(), 700);
     animate(performance.now());
+    announceStatus('3D Neural Node scene loaded. Drag to orbit, scroll to travel, click to pulse. Press C to open the configurator.');
   });
 });
 </script>
