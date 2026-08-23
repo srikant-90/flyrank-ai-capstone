@@ -21,7 +21,7 @@ describe('ChatMessage Component', () => {
   it('renders code snippet parts with accessible region and copy button', async () => {
     const user = userEvent.setup();
     const mockClipboard = vi.fn().mockResolvedValue(undefined);
-    Object.defineProperty(navigator, 'clipboard', {
+    Object.defineProperty(window.navigator, 'clipboard', {
       value: {
         writeText: mockClipboard,
       },

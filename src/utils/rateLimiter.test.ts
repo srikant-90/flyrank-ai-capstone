@@ -80,7 +80,14 @@ describe('withMaxDuration', () => {
   });
 
   it('rejects handler exceeding maxDuration timeout ceiling', async () => {
-    const slowTask = () => new Promise(resolve => setTimeout(resolve, 300));
-    await expect(withMaxDuration(slowTask, 50)).rejects.toThrow('Handler execution exceeded maximum timeout ceiling');
+    vi.useFakeTimers();
+    try {
+      const slowTask = () => new Promise(resolve => setTimeout(resolve, 300));
+      const promise = withMaxDuration(slowTask, 50);
+      vi.advanceTimersByTime(100);
+      await expect(promise).rejects.toThrow('Handler execution exceeded maximum timeout ceiling');
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });
