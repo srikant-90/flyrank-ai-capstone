@@ -179,11 +179,44 @@
 
     /* Hero */
     .hero {
-      padding: 64px 0 48px;
+      position: relative;
+      padding: 64px 32px 48px;
       display: grid;
       grid-template-columns: 1.25fr 0.75fr;
       gap: 36px;
       align-items: center;
+      border-radius: 16px;
+      overflow: hidden;
+      margin-top: 24px;
+      border: 1px solid var(--border);
+      background-color: var(--bg-card);
+    }
+
+    #hero-shader-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0.85;
+    }
+
+    .hero-shader-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      background: radial-gradient(ellipse at center, rgba(9,13,22,0.4) 0%, rgba(9,13,22,0.92) 85%);
+      pointer-events: none;
+    }
+
+    .hero-content-z {
+      position: relative;
+      z-index: 10;
     }
 
     /* Responsive Breakpoints & Mobile Polish */
@@ -574,6 +607,7 @@
       <nav aria-label="Primary navigation"><ul class="nav-links">
         <li><a href="#about">About</a></li>
         <li><a href="#projects">Projects</a></li>
+        <li><a href="Week1_Fragment_Shader_Hero.html" target="_blank" style="color: var(--accent); font-weight:600;">✨ Shader Hero</a></li>
         <li><a href="#identity-kit">Visual Identity</a></li>
         <li><a href="#docs">Docs</a></li>
         <li><button onclick="openModal('booking-modal')" class="btn btn-secondary" style="padding: 6px 14px; font-size: 13px;">Connect</button></li>
@@ -583,11 +617,14 @@
 
   <main id="main-content">
 
-    <!-- Hero Section -->
+    <!-- Hero Section with Custom WebGL Fragment Shader -->
     <section class="hero" id="about">
-      <div>
+      <canvas id="hero-shader-canvas"></canvas>
+      <div class="hero-shader-overlay"></div>
+
+      <div class="hero-content-z">
         <div class="hero-tag">
-          <span>General AI Fluency Track</span>
+          <span>General AI Fluency Track • Week 1 Hero</span>
         </div>
         <h1 class="hero-title">
           I engineer <span>reliable AI agents</span>, live tool-calling pipelines, and deterministic workflows.
@@ -597,10 +634,11 @@
         </p>
         <div class="hero-cta">
           <a href="#projects" class="btn">Explore Live Agent &rarr;</a>
-          <a href="https://github.com/srikant-90/flyrank-ai-capstone" target="_blank" rel="noopener" class="btn btn-secondary">GitHub Repository<span class="sr-only"> (opens in new tab)</span></a>
+          <a href="Week1_Fragment_Shader_Hero.html" target="_blank" class="btn btn-secondary">Interactive Shader Demo ✨</a>
+          <a href="https://github.com/srikant-90/flyrank-ai-capstone" target="_blank" rel="noopener" class="btn btn-secondary">GitHub<span class="sr-only"> (opens in new tab)</span></a>
         </div>
       </div>
-      <div class="hero-card">
+      <div class="hero-card hero-content-z">
         <div class="hero-card-title">Capstone Architecture</div>
         <div class="hero-card-stat">Autonomous Agent MVP</div>
         <p style="color: var(--text-muted); font-size: 13.5px;">Personal AI Research Scout Agent querying arXiv REST API with verified JSON flashcard export.</p>
@@ -619,6 +657,20 @@
       </div>
 
       <div class="grid-2">
+
+        <!-- FE-01 Custom Fragment Shader Hero -->
+        <div class="card" style="border-color: rgba(20, 184, 166, 0.4);">
+          <div>
+            <div class="card-tag">Week 1 • Shader Signature (FE-01)</div>
+            <h3 class="card-title">Custom GLSL Fragment Shader Hero</h3>
+            <p class="card-body">
+              Interactive WebGL liquid flow field with multi-octave domain warping, exponential mouse vector displacement, procedural film grain pass, and responsible performance features (DPR cap, offscreen pause, reduced-motion static fallback).
+            </p>
+          </div>
+          <div class="card-footer">
+            <a href="Week1_Fragment_Shader_Hero.html" target="_blank" class="card-link">Launch Interactive Shader Demo &rarr;</a>
+          </div>
+        </div>
 
         <!-- ResearchScout Agent (Lead Project) -->
         <div class="card">
@@ -1008,6 +1060,15 @@
       mainStatus.style.color = '#f43f5e';
       mainStatus.style.border = '1px solid rgba(244, 63, 94, 0.3)';
       mainStatus.style.display = 'block';
+    }
+  </script>
+
+  <!-- WebGL Fragment Shader Hero Initialization -->
+  <script type="module">
+    import { ShaderHero } from './src/utils/webglShaderHero.js';
+    const canvas = document.getElementById('hero-shader-canvas');
+    if (canvas) {
+      new ShaderHero(canvas, { grainIntensity: 0.04 });
     }
   </script>
 </body>

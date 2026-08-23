@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Custom GLSL Fragment Shader Hero — FlyRank AI Capstone Week 1 Assignment. Interactive fluid vector field with domain warping, grain pass, and responsible WebGL performance fallback.">
+  <meta name="author" content="Srikant">
+  <title>Custom Fragment Shader Hero — Week 1 Assignment | FlyRank AI Capstone</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+  <!-- Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-canvas: #090d16;
+      --bg-card: #131b2e;
+      --bg-card-hover: #18233c;
+      --border: #1e293b;
+      --border-focus: #334155;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --accent: #14b8a6;
+      --accent-hover: #0d9488;
+      --accent-bg: rgba(20, 184, 166, 0.12);
+      --font-heading: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --max-w: 1100px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-canvas);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: color 0.15s ease;
+    }
+    a:hover {
+      color: #2dd4bf;
+    }
+
+    /* Header */
+    header {
+      border-bottom: 1px solid var(--border);
+      background-color: rgba(9, 13, 22, 0.85);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-container {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .logo-badge {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      background-color: var(--accent-bg);
+      color: var(--accent);
+      border: 1px solid rgba(20, 184, 166, 0.3);
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-weight: 600;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      list-style: none;
+      align-items: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background-color: var(--accent);
+      color: #090d16;
+      padding: 9px 18px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13.5px;
+      font-family: var(--font-body);
+      transition: all 0.15s ease;
+      border: none;
+      cursor: pointer;
+    }
+    .btn:hover {
+      background-color: var(--accent-hover);
+      color: #090d16;
+      transform: translateY(-1px);
+    }
+    .btn-secondary {
+      background-color: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-main);
+    }
+    .btn-secondary:hover {
+      background-color: var(--bg-card);
+      border-color: var(--border-focus);
+      color: var(--text-main);
+    }
+
+    /* FULLSCREEN HERO CONTAINER */
+    .hero-container {
+      position: relative;
+      min-height: 88vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 24px;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+    }
+
+    #hero-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Contrast Protection Gradient Overlay */
+    .hero-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      background: radial-gradient(circle at 50% 40%, rgba(9,13,22,0.35) 0%, rgba(9,13,22,0.92) 85%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 10;
+      max-width: 860px;
+      text-align: center;
+      margin: 0 auto;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--accent);
+      background-color: rgba(20, 184, 166, 0.12);
+      border: 1px solid rgba(20, 184, 166, 0.3);
+      padding: 6px 14px;
+      border-radius: 9999px;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+
+    .hero-title {
+      font-family: var(--font-heading);
+      font-size: 46px;
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -1.2px;
+      margin-bottom: 20px;
+      color: var(--text-main);
+    }
+
+    .hero-title span {
+      background: linear-gradient(135deg, #14b8a6 0%, #38bdf8 50%, #8b5cf6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle {
+      font-size: 18px;
+      color: var(--text-muted);
+      margin-bottom: 32px;
+      line-height: 1.6;
+      max-width: 720px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 36px;
+    }
+
+    /* HUD UNIFORM DASHBOARD */
+    .hud-panel {
+      background: rgba(19, 27, 46, 0.85);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+      border-radius: 14px;
+      padding: 16px 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 16px;
+      text-align: left;
+      margin-top: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .hud-stat-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .hud-stat-value {
+      font-family: var(--font-mono);
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    /* CONTROLS BAR */
+    .controls-bar {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      align-items: center;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    .ctrl-btn {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-family: var(--font-mono);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .ctrl-btn:hover, .ctrl-btn.active {
+      background: var(--accent-bg);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* MAIN CONTAINER & SECTIONS */
+    main {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 48px 24px;
+    }
+
+    .section-title {
+      font-family: var(--font-heading);
+      font-size: 26px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .section-desc {
+      color: var(--text-muted);
+      margin-bottom: 32px;
+      font-size: 15px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+
+    .card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+    }
+
+    .card-title {
+      font-family: var(--font-heading);
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-body {
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    /* CODE BLOCK */
+    .code-container {
+      background: #060911;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.6;
+      color: #e2e8f0;
+      margin-top: 16px;
+    }
+
+    .kw { color: #f43f5e; font-weight: 600; }
+    .type { color: #38bdf8; }
+    .fn { color: #fbbf24; }
+    .cm { color: #64748b; font-style: italic; }
+    .num { color: #a855f7; }
+
+    @media (max-width: 768px) {
+      .hero-title { font-size: 32px; }
+      .hero-subtitle { font-size: 15px; }
+      .hud-panel { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="nav-container">
+      <a href="index.html" class="logo">
+        <svg width="24" height="24" viewBox="0 0 32 32" fill="none">
+          <rect width="32" height="32" rx="8" fill="#090D16" stroke="#1E293B" stroke-width="1.5"/>
+          <path d="M10 9h12v3.5H14.5a1.5 1.5 0 0 0 0 3h3a4.5 4.5 0 0 1 0 9H10v-3.5h7.5a1.5 1.5 0 0 0 0-3h-3a4.5 4.5 0 0 1 0-9z" fill="#F1F5F9"/>
+          <circle cx="23" cy="22" r="2.5" fill="#14B8A6"/>
+        </svg>
+        Srikant <span class="logo-badge">Week 1 Shader Hero</span>
+      </a>
+      <nav><ul class="nav-links">
+        <li><a href="index.html">← Back to Portfolio</a></li>
+        <li><a href="#breakdown" class="btn btn-secondary" style="padding: 6px 14px; font-size: 13px;">Shader Breakdown</a></li>
+      </ul></nav>
+    </div>
+  </header>
+
+  <!-- FULLSCREEN SHADER HERO -->
+  <section class="hero-container" id="hero-section">
+    <canvas id="hero-canvas"></canvas>
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content">
+      <div class="hero-tag">
+        <span>Frontend AI Engineering Track • Assignment 1</span>
+      </div>
+      <h1 class="hero-title">
+        Custom <span>GLSL Fragment Shader</span> Hero
+      </h1>
+      <p class="hero-subtitle">
+        Going from <em>"shaders are scary"</em> to a shipped, high-performance WebGL hero. Featuring interactive domain warping, real-time mouse vector displacement, procedural film grain, and WCAG-compliant contrast safety.
+      </p>
+
+      <div class="hero-actions">
+        <a href="#breakdown" class="btn">Explore Shader Source &rarr;</a>
+        <a href="https://github.com/srikant-90/flyrank-ai-capstone" target="_blank" rel="noopener" class="btn btn-secondary">View GitHub Code</a>
+      </div>
+
+      <!-- LIVE UNIFORM INSPECTOR HUD -->
+      <div class="hud-panel">
+        <div>
+          <div class="hud-stat-label">u_time (sec)</div>
+          <div class="hud-stat-value" id="hud-time">0.00</div>
+        </div>
+        <div>
+          <div class="hud-stat-label">u_mouse (X, Y)</div>
+          <div class="hud-stat-value" id="hud-mouse">0.00, 0.00</div>
+        </div>
+        <div>
+          <div class="hud-stat-label">u_resolution</div>
+          <div class="hud-stat-value" id="hud-res">1920x1080</div>
+        </div>
+        <div>
+          <div class="hud-stat-label">devicePixelRatio</div>
+          <div class="hud-stat-value" id="hud-dpr">1.00 (Capped)</div>
+        </div>
+        <div>
+          <div class="hud-stat-label">Frame Rate</div>
+          <div class="hud-stat-value" id="hud-fps">60 FPS</div>
+        </div>
+        <div>
+          <div class="hud-stat-label">Render State</div>
+          <div class="hud-stat-value" id="hud-state" style="color: #10b981;">Active Loop</div>
+        </div>
+      </div>
+
+      <!-- CONTROLS BAR -->
+      <div class="controls-bar">
+        <button id="btn-toggle-motion" class="ctrl-btn">⚡ Toggle Reduced Motion</button>
+        <button id="btn-toggle-grain" class="ctrl-btn">✨ Toggle Film Grain</button>
+        <button id="btn-reset-mouse" class="ctrl-btn">🎯 Reset Mouse Vector</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- SHADER BREAKDOWN & EXPLANATION -->
+  <main id="breakdown">
+    <div class="section-header">
+      <h2 class="section-title">Shader Code Breakdown & Mental Model</h2>
+      <p class="section-desc">Line-by-line breakdown of how the <code>uv</code>, <code>time</code>, and <code>mouse</code> uniforms synthesize into organic fluid motion.</p>
+    </div>
+
+    <div class="grid-2">
+
+      <div class="card">
+        <div class="card-title">1. UV Normalization & Aspect Correction</div>
+        <div class="card-body">
+          <p>Pixel coordinates (<code>gl_FragCoord.xy</code>) vary with resolution. We shift the origin to the center of the screen and divide by the minimum viewport dimension to map <code>st</code> coordinates into a square <code>[-1.0, 1.0]</code> aspect-corrected domain.</p>
+          <div class="code-container">
+<span class="type">vec2</span> st = (gl_FragCoord.xy - <span class="num">0.5</span> * u_resolution.xy) / <span class="fn">min</span>(u_resolution.x, u_resolution.y);
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">2. Mouse Force Field & Vector Falloff</div>
+        <div class="card-body">
+          <p>We measure the Euclidean distance between the UV fragment position and <code>u_mouse</code>. An exponential decay function <code>exp(-dist * 3.5)</code> creates a soft, natural liquid force field that bends nearby flow coordinates towards the cursor.</p>
+          <div class="code-container">
+<span class="type">float</span> distToMouse = <span class="fn">length</span>(st - u_mouse);
+<span class="type">float</span> mouseForce = <span class="fn">exp</span>(-distToMouse * <span class="num">3.5</span>);
+<span class="type">vec2</span> mouseDisplacement = <span class="fn">normalize</span>(st - u_mouse) * mouseForce * <span class="num">0.25</span>;
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">3. Multi-Octave Trigonometric Domain Warping</div>
+        <div class="card-body">
+          <p>Rather than simple noise textures, we layer 3 rotating octaves of sine and cosine wave harmonics. Each octave multiplies coordinate space, rotates by <code>rotate2D(angle)</code>, and shifts phase using <code>u_time</code> to produce fluid liquid turbulence.</p>
+          <div class="code-container">
+<span class="type">float</span> wave1 = <span class="fn">sin</span>(q.x * <span class="num">3.0</span> + q.y * <span class="num">2.5</span> + time * <span class="num">0.7</span>);
+<span class="type">vec2</span> r = <span class="fn">rotate2D</span>(-time * <span class="num">0.12</span>) * (q * <span class="num">1.6</span> + <span class="type">vec2</span>(wave1 * <span class="num">0.5</span>));
+<span class="type">float</span> wave2 = <span class="fn">cos</span>(r.x * <span class="num">4.0</span> - r.y * <span class="num">3.2</span> + time * <span class="num">0.9</span>);
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">4. Procedural Film Grain & Contrast Vignette</div>
+        <div class="card-body">
+          <p>To eliminate color quantization (banding) on dark displays, we add pseudo-random hash noise <code>hash21</code>. Finally, a radial vignette darkens screen edges, guaranteeing high-contrast legibility for overlay headline text.</p>
+          <div class="code-container">
+<span class="type">float</span> vignette = <span class="fn">length</span>(st);
+color = <span class="fn">mix</span>(color, <span class="type">vec3</span>(<span class="num">0.035</span>, <span class="num">0.05</span>, <span class="num">0.085</span>), <span class="fn">smoothstep</span>(<span class="num">0.4</span>, <span class="num">1.4</span>, vignette) * <span class="num">0.75</span>);
+<span class="type">float</span> grain = (<span class="fn">hash21</span>(gl_FragCoord.xy + u_time * <span class="num">10.0</span>) - <span class="num">0.5</span>) * u_grain_intensity;
+color += <span class="type">vec3</span>(grain);
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RESPONSIBLE ENGINEERING SUMMARY -->
+    <div class="card" style="background: rgba(20, 184, 166, 0.05); border-color: rgba(20, 184, 166, 0.25); margin-bottom: 48px;">
+      <div class="card-title" style="color: var(--accent);">🛡️ Responsible Engineering & Performance Fallback Statement</div>
+      <div class="card-body" style="color: var(--text-main);">
+        <ul style="padding-left: 20px; display: flex; flex-direction: column; gap: 8px;">
+          <li><strong>DevicePixelRatio Cap:</strong> Capped at <code>Math.min(window.devicePixelRatio, 2)</code> to prevent rendering over 4 million pixels on 4K/Retina displays.</li>
+          <li><strong>Visibility & Off-Screen Pause:</strong> Listens to <code>document.visibilitychange</code> and uses <code>IntersectionObserver</code> to automatically cancel <code>requestAnimationFrame</code> whenever the tab is hidden or scrolled offscreen.</li>
+          <li><strong>Prefers-Reduced-Motion:</strong> Automatically detects system preference for reduced motion and falls back to a single, static WebGL render pass at fixed <code>t = 1.5s</code> without continuous GPU redraws.</li>
+        </ul>
+      </div>
+    </div>
+
+  </main>
+
+  <script type="module">
+    import { ShaderHero } from './src/utils/webglShaderHero.js';
+
+    const canvas = document.getElementById('hero-canvas');
+    let isGrainEnabled = true;
+
+    const hudTime = document.getElementById('hud-time');
+    const hudMouse = document.getElementById('hud-mouse');
+    const hudRes = document.getElementById('hud-res');
+    const hudDpr = document.getElementById('hud-dpr');
+    const hudFps = document.getElementById('hud-fps');
+    const hudState = document.getElementById('hud-state');
+
+    const btnToggleMotion = document.getElementById('btn-toggle-motion');
+    const btnToggleGrain = document.getElementById('btn-toggle-grain');
+    const btnResetMouse = document.getElementById('btn-reset-mouse');
+
+    const shaderHero = new ShaderHero(canvas, {
+      grainIntensity: 0.05,
+      onStatsUpdate: (stats) => {
+        if (hudTime) hudTime.textContent = stats.time;
+        if (hudMouse) hudMouse.textContent = `${stats.mouseX}, ${stats.mouseY}`;
+        if (hudRes) hudRes.textContent = `${stats.width}x${stats.height}`;
+        if (hudDpr) hudDpr.textContent = `${stats.dpr.toFixed(2)}x`;
+        if (hudFps) hudFps.textContent = `${stats.fps} FPS`;
+        
+        if (hudState) {
+          if (stats.isReducedMotion) {
+            hudState.textContent = 'Static (Reduced Motion)';
+            hudState.style.color = '#38bdf8';
+          } else if (stats.isPaused) {
+            hudState.textContent = 'Paused (Offscreen/Hidden)';
+            hudState.style.color = '#fbbf24';
+          } else {
+            hudState.textContent = 'Active Loop (60 FPS)';
+            hudState.style.color = '#10b981';
+          }
+        }
+      }
+    });
+
+    btnToggleMotion?.addEventListener('click', () => {
+      const isCurrentlyReduced = shaderHero.isReducedMotion;
+      shaderHero.setForceReducedMotion(!isCurrentlyReduced);
+      btnToggleMotion.classList.toggle('active', !isCurrentlyReduced);
+    });
+
+    btnToggleGrain?.addEventListener('click', () => {
+      isGrainEnabled = !isGrainEnabled;
+      shaderHero.setGrainIntensity(isGrainEnabled ? 0.05 : 0.0);
+      btnToggleGrain.classList.toggle('active', !isGrainEnabled);
+    });
+
+    btnResetMouse?.addEventListener('click', () => {
+      shaderHero.mouseTarget = { x: 0, y: 0 };
+    });
+  </script>
+</body>
+</html>
