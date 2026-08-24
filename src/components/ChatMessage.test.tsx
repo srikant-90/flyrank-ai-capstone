@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { ChatMessage } from './ChatMessage';
@@ -18,10 +18,9 @@ describe('ChatMessage Component', () => {
     expect(screen.getByText('Hello! I found 3 relevant arXiv papers.')).toBeInTheDocument();
   });
 
-  it('renders code snippet parts with accessible region and copy button', async () => {
-    const user = userEvent.setup();
+  it('renders code snippet parts with accessible region and copy button', () => {
     const mockClipboard = vi.fn().mockResolvedValue(undefined);
-    Object.defineProperty(window.navigator, 'clipboard', {
+    Object.defineProperty(navigator, 'clipboard', {
       value: {
         writeText: mockClipboard,
       },
@@ -49,7 +48,7 @@ describe('ChatMessage Component', () => {
     const copyBtn = screen.getByRole('button', { name: /copy code to clipboard/i });
     expect(copyBtn).toBeInTheDocument();
 
-    await user.click(copyBtn);
+    fireEvent.click(copyBtn);
     expect(mockClipboard).toHaveBeenCalledWith(
       'import httpx\nresponse = httpx.get("https://export.arxiv.org/api/query")'
     );

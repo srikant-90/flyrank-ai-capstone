@@ -24,7 +24,7 @@ jobs:
         run: npm ci
 
       - name: Run Component & Unit Tests (Vitest)
-        run: npx vitest run --reporter=verbose
+        run: npm run test:run
 
       - name: Verify TypeScript & Build
         run: npm run build
